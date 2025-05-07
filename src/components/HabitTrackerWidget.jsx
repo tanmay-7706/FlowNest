@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Plus, Trash2 } from "lucide-react"
@@ -111,7 +109,7 @@ const HabitTrackerWidget = () => {
           </table>
         </div>
       ) : (
-        <p className="text-gray-500 text-center py-4">No habits yet. Add one above!</p>
+        <p className="text-gray-500 text-center py-4">No habits yet.<br/>Add one above!</p>
       )}
     </motion.div>
   )

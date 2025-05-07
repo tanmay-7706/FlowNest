@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Calendar, Plus, Trash2 } from "lucide-react"
@@ -17,7 +15,7 @@ const Blog = () => {
 
   const moods = [
     { value: "happy", emoji: "😊", label: "Happy" },
-    { value: "excited", emoji: "🎉", label: "Excited" },
+    { value: "excited", emoji: "🥳", label: "Excited" },
     { value: "neutral", emoji: "😐", label: "Neutral" },
     { value: "tired", emoji: "😴", label: "Tired" },
     { value: "sad", emoji: "😔", label: "Sad" },
@@ -92,15 +90,15 @@ const Blog = () => {
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto px-4 py-12"
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <h1 className="text-3xl font-bold mb-4 md:mb-0">Weekly Reflections</h1>
+      <div className="flex flex-col justify-between items-center md:items-center mb-8">
+        <h1 className="text-3xl font-bold mb-4 md:mb-0 pb-7">Weekly Reflections</h1>
         <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center">
           <Plus size={18} className="mr-2" />
           New Reflection
         </button>
       </div>
 
-      {/* Mood Meter */}
+      {/* Mood meter ke liye condition aur CSS*/}
       <div className="card mb-8">
         <h2 className="text-xl font-semibold mb-4">Today's Mood</h2>
         <div className="flex justify-between items-center">
@@ -119,7 +117,7 @@ const Blog = () => {
         </div>
       </div>
 
-      {/* Add Reflection Form */}
+      {/* Reflection Form add karna */}
       {showForm && (
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="card mb-8">
           <h2 className="text-xl font-semibold mb-4">Add New Reflection</h2>
@@ -184,7 +182,7 @@ const Blog = () => {
         </motion.div>
       )}
 
-      {/* Reflections List */}
+      {/* Reflections list ko render karna hai */}
       <div className="space-y-6">
         {reflections.length > 0 ? (
           reflections.map((reflection) => (
@@ -212,7 +210,7 @@ const Blog = () => {
           ))
         ) : (
           <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 mb-4">No reflections yet. Start journaling your week!</p>
+            <p className="text-gray-500 mb-4">No reflections yet. <br />Start journaling your week!</p>
             <button onClick={() => setShowForm(true)} className="btn-primary">
               Create Your First Reflection
             </button>

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react"
@@ -74,8 +72,8 @@ const TodoWidget = () => {
           placeholder="Add a new task..."
           className="input-field flex-grow"
         />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} className="input-field w-24">
-          <option value="high">High</option>
+        <select value={priority} onChange={(e) => setPriority(e.target.value)} className="input-field w-28">
+          <option value="high">High </option>
           <option value="medium">Medium</option>
           <option value="low">Low</option>
         </select>
@@ -110,7 +108,7 @@ const TodoWidget = () => {
             </button>
           </motion.li>
         ))}
-        {tasks.length === 0 && <p className="text-gray-500 text-center py-4">No tasks yet. Add one above!</p>}
+        {tasks.length === 0 && <p className="text-gray-500 text-center py-4">No tasks yet.<br/>Add one above!</p>}
       </ul>
     </motion.div>
   )

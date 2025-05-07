@@ -1,8 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, User, Github, Chrome } from "lucide-react"
+import { DiChrome } from "react-icons/di"
 
 const Auth = ({ isSignup = false }) => {
   const [formType, setFormType] = useState(isSignup ? "signup" : "login")
@@ -15,11 +14,11 @@ const Auth = ({ isSignup = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // In a real app, this would connect to a backend
-    // For now, just log the data
+    // Asli app mein backend se connect karna hoga 
+    // Abhi ke liye aise hi data ko log karega -->
     console.log("Form submitted:", formData)
 
-    // Show success message
+    // success message show karega -->
     alert(`${formType === "signup" ? "Sign up" : "Login"} successful! (This is just a UI demo)`)
   }
 
@@ -48,7 +47,7 @@ const Auth = ({ isSignup = false }) => {
           </p>
         </div>
 
-        {/* Form Type Toggle */}
+        {/* Form ke type ko toggle karne ke liye button */}
         <div className="flex rounded-lg bg-gray-100 p-1 mb-6">
           <button
             onClick={() => setFormType("login")}
@@ -81,7 +80,7 @@ const Auth = ({ isSignup = false }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="John Doe"
+                  placeholder="Tony Stark"
                   className="input-field pl-10"
                   required={formType === "signup"}
                 />
@@ -177,12 +176,14 @@ const Auth = ({ isSignup = false }) => {
               type="button"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
+              <Chrome size={22} className="pr-2"/>
               Google
             </button>
             <button
               type="button"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
+              <Github size={22} className="pr-2"/>
               GitHub
             </button>
           </div>

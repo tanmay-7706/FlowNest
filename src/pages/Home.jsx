@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
 import TodoWidget from "../components/TodoWidget"
@@ -19,7 +17,7 @@ const Home = ({ widgets }) => {
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto px-4 py-8"
     >
-      {/* Hero Section */}
+      {/* Header section ke liye motion aur CSS*/}
       <section className="mb-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -41,14 +39,24 @@ const Home = ({ widgets }) => {
             >
               Plan your day, your way. Learn more about productivity techniques that predict success.
             </motion.p>
-            <motion.button
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="btn-primary"
-            >
-              Start Now
-            </motion.button>
+            <div className="flex justify-center space-x-4">
+              <motion.button
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="btn-primary flex items-center justify-center"
+              >
+                Start Now
+              </motion.button>
+              <motion.button
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg shadow-md transition-all duration-300 flex items-center"
+              >
+                Learn More
+              </motion.button>
+            </div>
           </div>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -65,7 +73,7 @@ const Home = ({ widgets }) => {
         </div>
       </section>
 
-      {/* Search Bar */}
+      {/* Search Bar ke liye CSS */} 
       <div className="mb-8 relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className="h-5 w-5 text-gray-400" />
@@ -79,7 +87,7 @@ const Home = ({ widgets }) => {
         />
       </div>
 
-      {/* Widgets Section */}
+      {/* Widgets section ke liye CSS */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Your Productivity Tools</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -90,7 +98,7 @@ const Home = ({ widgets }) => {
         </div>
       </section>
 
-      {/* Quote Carousel */}
+      {/* Quote Carousel render karna */}
       <QuoteCarousel />
     </motion.div>
   )

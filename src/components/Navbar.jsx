@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
@@ -14,7 +12,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-white shadow-sm py-4 px-6">
+    <nav className="bg-white shadow-sm py-4 px-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <div className="bg-blue-500 text-white p-2 rounded">
@@ -60,7 +58,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu button -- Yeh GPT ki help se kara hai */}
         <button className="md:hidden text-gray-500 focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {isOpen ? (
