@@ -65,9 +65,9 @@ const Home = ({ widgets }) => {
             className="bg-blue-50 p-6 rounded-xl shadow-md"
           >
             <img
-              src="/placeholder.svg?height=300&width=400"
+              src="/dashboard.png"
               alt="Productivity Dashboard"
-              className="w-full h-auto rounded-lg"
+              className="w-auto h-auto rounded-lg hover:scale-125 transition-transform duration-300 "
             />
           </motion.div>
         </div>

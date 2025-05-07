@@ -1,29 +1,30 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Target, Zap, Heart, Users } from "lucide-react"
+import { Target, HeartHandshake, BrainCircuit, Users, } from "lucide-react"
 
 const About = () => {
   const teamMembers = [
     {
-      name: "Alex Johnson",
-      role: "Founder & CEO",
-      image: "/placeholder.svg?height=200&width=200",
-      bio: "Passionate about productivity and helping people achieve their goals.",
+      name: "Steve Rogers",
+      role: "Captain America",
+      image: "https://cdn.britannica.com/30/182830-050-96F2ED76/Chris-Evans-title-character-Joe-Johnston-Captain.jpg",
+      bio: "A super-soldier with a strong moral compass and unwavering dedication to justice.",
     },
     {
-      name: "Sarah Williams",
-      role: "Lead Designer",
-      image: "/placeholder.svg?height=200&width=200",
-      bio: "Creates beautiful, intuitive interfaces that help users stay focused.",
+      name: "Tony Stark",
+      role: "Iron Man",
+      image: "https://cdn.britannica.com/49/182849-050-4C7FE34F/scene-Iron-Man.jpg",
+      bio: "A genius billionaire inventor who suits up to protect the world with cutting-edge tech.",
     },
     {
-      name: "Michael Chen",
-      role: "Developer",
-      image: "/placeholder.svg?height=200&width=200",
-      bio: "Builds robust, efficient systems that power the FlowNest experience.",
+      name: "Thor Odinson",
+      role: "Thor",
+      image: "https://images.alphacoders.com/124/1247503.jpeg",
+      bio: "The God of Thunder, wielding Mjolnir and fighting for peace across realms.",
     },
-  ]
+  ];
+  
 
   const container = {
     hidden: { opacity: 0 },
@@ -71,7 +72,7 @@ const About = () => {
 
           <motion.div variants={item} className="card text-center">
             <div className="bg-blue-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Zap className="h-8 w-8 text-blue-600" />
+              <BrainCircuit className="h-8 w-8 text-blue-600" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Vision</h3>
             <p className="text-gray-600">
@@ -82,7 +83,7 @@ const About = () => {
 
           <motion.div variants={item} className="card text-center">
             <div className="bg-purple-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Heart className="h-8 w-8 text-purple-600" />
+              <HeartHandshake className="h-8 w-8 text-purple-600" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Values</h3>
             <p className="text-gray-600">
@@ -105,9 +106,9 @@ const About = () => {
           {teamMembers.map((member, index) => (
             <motion.div key={index} variants={item} className="card overflow-hidden">
               <img
-                src={member.image || "/placeholder.svg"}
+                src={member.image}
                 alt={member.name}
-                className="w-full h-48 object-cover object-center rounded-t-xl"
+                className="w-full h-177 object-cover object-center rounded-t-xl"
               />
               <div className="p-6">
                 <h3 className="text-xl font-semibold">{member.name}</h3>
