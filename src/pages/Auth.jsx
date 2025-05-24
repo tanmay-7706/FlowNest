@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Eye, EyeOff, Mail, Lock, User, Github, Chrome } from "lucide-react"
-import { DiChrome } from "react-icons/di"
 
 const Auth = ({ isSignup = false }) => {
   const [formType, setFormType] = useState(isSignup ? "signup" : "login")

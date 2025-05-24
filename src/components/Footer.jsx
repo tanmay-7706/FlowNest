@@ -16,7 +16,7 @@ const Footer = () => {
           <span className="text-xl font-bold">FlowNest</span>
           </Link>
             <p className="mt-4 text-sm text-gray-600">
-              The personal productivity ecosystem designed to help you build better habits <br></br> and achieve your goals.
+              The personal productivity ecosystem designed to help you build better habits <br /> and achieve your goals.
             </p>
           </div>
 
