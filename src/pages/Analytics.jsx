@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
 import { collection, query, where, onSnapshot } from "firebase/firestore"
-import { db } from "../utils/firebase"
+import { db } from "@/utils/firebase"
 import { useAuth } from "../context/AuthContext"
 import { Calendar, Target, Clock, CheckCircle } from "lucide-react"
 
