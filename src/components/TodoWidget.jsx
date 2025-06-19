@@ -1,67 +1,103 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "../utils/firebase";
+import { useAuth } from "../context/AuthContext";
 
 const TodoWidget = () => {
-  const [tasks, setTasks] = useState([])
-  const [newTask, setNewTask] = useState("")
-  const [priority, setPriority] = useState("medium")
+  const { currentUser } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
+  const [priority, setPriority] = useState("medium");
 
   useEffect(() => {
-    const savedTasks = localStorage.getItem("tasks")
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks))
+    if (!currentUser) return;
+
+    const todosRef = collection(db, "users", currentUser.uid, "todos");
+
+    const q = query(todosRef, orderBy("order"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const tasksData = [];
+      querySnapshot.forEach((doc) => {
+        tasksData.push({ id: doc.id, ...doc.data() });
+      });
+      setTasks(tasksData);
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  const addTask = async (e) => {
+    e.preventDefault();
+    if (!newTask.trim()) return;
+
+    try {
+      const todosRef = collection(db, "users", currentUser.uid, "todos");
+      await addDoc(todosRef, {
+        text: newTask,
+        completed: false,
+        priority,
+        order: priority === "high" ? 1 : priority === "medium" ? 2 : 3,
+        createdAt: new Date(),
+      });
+      setNewTask("");
+      setPriority("medium");
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
-  }, [])
+  };
 
-  const saveTasks = (updatedTasks) => {
-    setTasks(updatedTasks)
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-  }
-
-  const addTask = (e) => {
-    e.preventDefault()
-    if (!newTask.trim()) return
-
-    const task = {
-      id: Date.now(),
-      text: newTask,
-      completed: false,
-      priority,
-      order: priority === "high" ? 1 : priority === "medium" ? 2 : 3,
+  const toggleComplete = async (id) => {
+    try {
+      const taskRef = doc(db, "users", currentUser.uid, "todos", id);
+      const task = tasks.find((task) => task.id === id);
+      if (task) {
+        await updateDoc(taskRef, { completed: !task.completed });
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
     }
+  };
 
-    const updatedTasks = [...tasks, task].sort((a, b) => a.order - b.order)
-    saveTasks(updatedTasks)
-    setNewTask("")
-    setPriority("medium")
-  }
-
-  const toggleComplete = (id) => {
-    const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task))
-    saveTasks(updatedTasks)
-  }
-
-  const deleteTask = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id)
-    saveTasks(updatedTasks)
-  }
+  const deleteTask = async (id) => {
+    try {
+      const taskRef = doc(db, "users", currentUser.uid, "todos", id);
+      await deleteDoc(taskRef);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       case "medium":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "low":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card"
+    >
       <h2 className="text-xl font-semibold mb-4">To-Do</h2>
 
       <form onSubmit={addTask} className="mb-4 flex gap-2">
@@ -72,8 +108,12 @@ const TodoWidget = () => {
           placeholder="Add a new task..."
           className="input-field flex-grow"
         />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} className="input-field w-28">
-          <option value="high">High </option>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          className="input-field w-24"
+        >
+          <option value="high">High</option>
           <option value="medium">Medium</option>
           <option value="low">Low</option>
         </select>
@@ -98,20 +138,29 @@ const TodoWidget = () => {
                 onChange={() => toggleComplete(task.id)}
                 className="h-5 w-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
               />
-              <span className={`${task.completed ? "line-through text-gray-400" : ""}`}>{task.text}</span>
+              <span className={`${task.completed ? "line-through text-gray-400" : ""}`}>
+                {task.text}
+              </span>
               <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)}`}>
                 {task.priority}
               </span>
             </div>
-            <button onClick={() => deleteTask(task.id)} className="text-gray-400 hover:text-red-500">
+            <button
+              onClick={() => deleteTask(task.id)}
+              className="text-gray-400 hover:text-red-500"
+            >
               <Trash2 size={16} />
             </button>
           </motion.li>
         ))}
-        {tasks.length === 0 && <p className="text-gray-500 text-center py-4">No tasks yet.<br/>Add one above!</p>}
+        {tasks.length === 0 && (
+          <p className="text-gray-500 text-center py-4">
+            No tasks yet. Add one above!
+          </p>
+        )}
       </ul>
     </motion.div>
-  )
-}
+  );
+};
 
-export default TodoWidget
+export default TodoWidget;

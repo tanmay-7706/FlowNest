@@ -1,35 +1,56 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Save } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
+import { db } from "@/utils/firebase";
+import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore"
 
 const ReflectionWidget = () => {
   const [reflection, setReflection] = useState("")
   const [savedReflections, setSavedReflections] = useState([])
+  const { currentUser } = useAuth()
 
   useEffect(() => {
-    const saved = localStorage.getItem("reflections")
-    if (saved) {
-      setSavedReflections(JSON.parse(saved))
-    }
-  }, [])
+    if (currentUser) {
+      const reflectionsRef = collection(db, "users", currentUser.uid, "reflections")
+      const q = query(reflectionsRef, orderBy("date", "desc"))
 
-  const saveReflection = () => {
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const reflections = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().date.toDate(), // Convert Firebase Timestamp to JavaScript Date
+        }))
+        setSavedReflections(reflections)
+      })
+
+      return () => unsubscribe() // Cleanup on unmount
+    } else {
+      setSavedReflections([]) // Clear reflections if no user
+    }
+  }, [currentUser])
+
+  const saveReflection = async () => {
     if (!reflection.trim()) return
 
-    const newReflection = {
-      id: Date.now(),
-      text: reflection,
-      date: new Date().toISOString(),
+    if (currentUser) {
+      try {
+        const reflectionsRef = collection(db, "users", currentUser.uid, "reflections")
+        await addDoc(reflectionsRef, {
+          text: reflection,
+          date: new Date(),
+        })
+        setReflection("") // Clear the input after saving
+      } catch (error) {
+        console.error("Error saving reflection:", error)
+      }
     }
-
-    const updatedReflections = [newReflection, ...savedReflections]
-    setSavedReflections(updatedReflections)
-    localStorage.setItem("reflections", JSON.stringify(updatedReflections))
-    setReflection("")
   }
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
+  const formatDate = (date) => {
+    if (!(date instanceof Date)) {
+      return "Invalid Date"
+    }
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",

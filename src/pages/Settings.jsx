@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Save, RotateCcw } from "lucide-react"
+import DataExport from "../components/DataExport"
 
 const Settings = ({ widgets, updateWidgets }) => {
   const [localWidgets, setLocalWidgets] = useState({ ...widgets })
@@ -192,6 +193,9 @@ const Settings = ({ widgets, updateWidgets }) => {
             </div>
           </div>
         </div>
+
+        {/* Data Export Section */}
+        <DataExport />
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-4">

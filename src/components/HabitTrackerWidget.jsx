@@ -1,54 +1,101 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Plus, Trash2 } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
+import { db } from "@/utils/firebase"
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore"
 
 const HabitTrackerWidget = () => {
   const [habits, setHabits] = useState([])
   const [newHabit, setNewHabit] = useState("")
   const daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"]
+  const { currentUser } = useAuth()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const savedHabits = localStorage.getItem("habits")
-    if (savedHabits) {
-      setHabits(JSON.parse(savedHabits))
+    if (!currentUser) {
+      setLoading(false)
+      return // Don't proceed if no user
     }
-  }, [])
 
-  const saveHabits = (updatedHabits) => {
-    setHabits(updatedHabits)
-    localStorage.setItem("habits", JSON.stringify(updatedHabits))
-  }
+    const habitsCollectionRef = collection(db, "users", currentUser.uid, "habits")
 
-  const addHabit = (e) => {
+    const unsubscribe = onSnapshot(
+      habitsCollectionRef,
+      (snapshot) => {
+        const fetchedHabits = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setHabits(fetchedHabits)
+        setLoading(false)
+      },
+      (error) => {
+        setError(error.message)
+        setLoading(false)
+      },
+    )
+
+    return () => unsubscribe() // Cleanup on unmount
+  }, [currentUser])
+
+  const addHabit = async (e) => {
     e.preventDefault()
-    if (!newHabit.trim()) return
+    if (!newHabit.trim() || !currentUser) return
 
-    const habit = {
-      id: Date.now(),
-      name: newHabit,
-      days: Array(7).fill(false),
+    try {
+      const habitsCollectionRef = collection(db, "users", currentUser.uid, "habits")
+      await addDoc(habitsCollectionRef, {
+        name: newHabit,
+        days: Array(7).fill(false),
+      })
+      setNewHabit("")
+    } catch (error) {
+      setError(error.message)
     }
-
-    saveHabits([...habits, habit])
-    setNewHabit("")
   }
 
-  const toggleDay = (habitId, dayIndex) => {
-    const updatedHabits = habits.map((habit) => {
-      if (habit.id === habitId) {
-        const updatedDays = [...habit.days]
-        updatedDays[dayIndex] = !updatedDays[dayIndex]
-        return { ...habit, days: updatedDays }
+  const toggleDay = async (habitId, dayIndex) => {
+    if (!currentUser) return
+
+    try {
+      const habitDocRef = doc(db, "users", currentUser.uid, "habits", habitId)
+      const updatedHabits = habits.map((habit) => {
+        if (habit.id === habitId) {
+          const updatedDays = [...habit.days]
+          updatedDays[dayIndex] = !updatedDays[dayIndex]
+          return { ...habit, days: updatedDays }
+        }
+        return habit
+      })
+
+      const habitToUpdate = updatedHabits.find((habit) => habit.id === habitId)
+      if (habitToUpdate) {
+        await updateDoc(habitDocRef, { days: habitToUpdate.days })
       }
-      return habit
-    })
-
-    saveHabits(updatedHabits)
+    } catch (error) {
+      setError(error.message)
+    }
   }
 
-  const deleteHabit = (habitId) => {
-    const updatedHabits = habits.filter((habit) => habit.id !== habitId)
-    saveHabits(updatedHabits)
+  const deleteHabit = async (habitId) => {
+    if (!currentUser) return
+
+    try {
+      const habitDocRef = doc(db, "users", currentUser.uid, "habits", habitId)
+      await deleteDoc(habitDocRef)
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  if (loading) {
+    return <div className="card">Loading habits...</div>
+  }
+
+  if (error) {
+    return <div className="card">Error: {error}</div>
   }
 
   return (
@@ -109,7 +156,7 @@ const HabitTrackerWidget = () => {
           </table>
         </div>
       ) : (
-        <p className="text-gray-500 text-center py-4">No habits yet.<br/>Add one above!</p>
+        <p className="text-gray-500 text-center py-4">No habits yet. Add one above!</p>
       )}
     </motion.div>
   )

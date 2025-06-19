@@ -5,6 +5,7 @@ import PomodoroWidget from "../components/PomodoroWidget"
 import HabitTrackerWidget from "../components/HabitTrackerWidget"
 import QuoteCarousel from "../components/QuoteCarousel"
 import ReflectionWidget from "../components/ReflectionWidget"
+import GoalTracker from "../components/GoalTracker"
 import { Search } from "lucide-react"
 
 const Home = ({ widgets }) => {
@@ -94,6 +95,7 @@ const Home = ({ widgets }) => {
           {widgets.todo && <TodoWidget />}
           {widgets.pomodoro && <PomodoroWidget />}
           {widgets.habit && <HabitTrackerWidget />}
+          <GoalTracker/>
           <ReflectionWidget />
         </div>
       </section>

@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Play, Pause, RotateCcw } from "lucide-react";
+import { useState, useEffect, useRef } from "react"
+import { motion } from "framer-motion"
+import { Play, Pause, RotateCcw } from "lucide-react"
 
 const PomodoroWidget = () => {
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes in seconds
   const [isActive, setIsActive] = useState(false)
   const [mode, setMode] = useState("pomodoro") // pomodoro, shortBreak, longBreak
   const intervalRef = useRef(null)
+  const [selectedSound, setSelectedSound] = useState("none")
+  const [volume, setVolume] = useState(0.5)
+  const audioRef = useRef(null)
 
   useEffect(() => {
     if (isActive) {
@@ -16,6 +19,7 @@ const PomodoroWidget = () => {
             clearInterval(intervalRef.current)
             setIsActive(false)
             // Play sound or notification here
+            handleTimerCompletion()
             return 0
           }
           return prevTime - 1
@@ -27,6 +31,36 @@ const PomodoroWidget = () => {
 
     return () => clearInterval(intervalRef.current)
   }, [isActive])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume
+    }
+  }, [volume])
+
+  const handleTimerCompletion = () => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "granted") {
+        new Notification("Pomodoro Timer", {
+          body: "Time's up!",
+          icon: "/favicon.ico",
+        })
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification("Pomodoro Timer", {
+              body: "Time's up!",
+              icon: "/favicon.ico",
+            })
+          }
+        })
+      }
+    }
+    // Play a default sound or allow the user to select one
+    if (selectedSound !== "none" && audioRef.current) {
+      audioRef.current.play()
+    }
+  }
 
   const toggleTimer = () => {
     setIsActive(!isActive)
@@ -76,6 +110,14 @@ const PomodoroWidget = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
+  const handleSoundChange = (e) => {
+    setSelectedSound(e.target.value)
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+  }
+
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
       <h2 className="text-xl font-semibold mb-4">Pomodoro Timer</h2>
@@ -112,6 +154,43 @@ const PomodoroWidget = () => {
       <div className="flex justify-center mb-8">
         <div className="text-6xl font-bold bg-blue-50 px-8 py-6 rounded-xl">{formatTime(timeLeft)}</div>
       </div>
+
+      <div className="flex justify-center space-x-4 mb-4">
+        <label htmlFor="sound">Ambient Sound:</label>
+        <select id="sound" value={selectedSound} onChange={handleSoundChange} className="rounded">
+          <option value="none">None</option>
+          <option value="rain">Rain</option>
+          <option value="cafe">Cafe</option>
+          <option value="whiteNoise">White Noise</option>
+        </select>
+      </div>
+
+      <div className="flex justify-center space-x-4 mb-4">
+        <label htmlFor="volume">Volume:</label>
+        <input
+          type="range"
+          id="volume"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={(e) => setVolume(Number.parseFloat(e.target.value))}
+        />
+      </div>
+
+      <audio
+        ref={audioRef}
+        loop
+        src={
+          selectedSound === "rain"
+            ? "/sounds/rain.mp3"
+            : selectedSound === "cafe"
+              ? "/sounds/cafe.mp3"
+              : selectedSound === "whiteNoise"
+                ? "/sounds/whiteNoise.mp3"
+                : null
+        }
+      />
 
       <div className="flex justify-center space-x-4">
         <button onClick={toggleTimer} className="btn-primary flex items-center justify-center">
