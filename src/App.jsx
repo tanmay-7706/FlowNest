@@ -9,6 +9,10 @@ import Services from "./pages/Services"
 import Blog from "./pages/Blog"
 import Auth from "./pages/Auth"
 import Settings from "./pages/Settings"
+import { AuthProvider } from "./context/AuthContext"
+import ProtectedRoute from "./components/ProtectedRoute"
+import Analytics from "./pages/Analytics"
+import CalendarView from "./pages/CalendarView"
 
 function App() {
   const [widgets, setWidgets] = useState({
@@ -30,23 +34,69 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<Home widgets={widgets} />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/login" element={<Auth />} />
-            <Route path="/signup" element={<Auth isSignup={true} />} />
-            <Route path="/settings" element={<Settings widgets={widgets} updateWidgets={updateWidgets} />} />
-          </Routes>
-        </AnimatePresence>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-gray-50">
+          <Navbar />
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <Home widgets={widgets} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/about" element={<About />} />
+              <Route
+                path="/services"
+                element={
+                  <ProtectedRoute>
+                    <Services />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/blog"
+                element={
+                  <ProtectedRoute>
+                    <Blog />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/login" element={<Auth />} />
+              <Route path="/signup" element={<Auth isSignup={true} />} />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings widgets={widgets} updateWidgets={updateWidgets} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute>
+                    <Analytics />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/calendar"
+                element={
+                  <ProtectedRoute>
+                    <CalendarView />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </AnimatePresence>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   )
 }
 
