@@ -1,33 +1,48 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Eye, EyeOff, Mail, Lock, User, Github, Chrome } from "lucide-react"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { useNavigate } from "react-router-dom"; 
+import { useAuth } from "../context/AuthContext";
 
 const Auth = ({ isSignup = false }) => {
-  const [formType, setFormType] = useState(isSignup ? "signup" : "login")
-  const [showPassword, setShowPassword] = useState(false)
+  const [formType, setFormType] = useState(isSignup ? "signup" : "login");
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-  })
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { signup, login } = useAuth();
+  const navigate = useNavigate(); 
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Asli app mein backend se connect karna hoga 
-    // Abhi ke liye aise hi data ko log karega -->
-    console.log("Form submitted:", formData)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // success message show karega -->
-    alert(`${formType === "signup" ? "Sign up" : "Login"} successful! (This is just a UI demo)`)
-  }
+    try {
+      if (formType === "signup") {
+        await signup(formData.email, formData.password, formData.name);
+      } else {
+        await login(formData.email, formData.password);
+      }
+      navigate("/"); // ✅ Redirect after login
+    } catch (e) {
+      setError(e.message);
+    }
+
+    setLoading(false);
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   return (
     <motion.div
@@ -38,7 +53,9 @@ const Auth = ({ isSignup = false }) => {
     >
       <div className="card">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">{formType === "login" ? "Welcome Back" : "Create an Account"}</h1>
+          <h1 className="text-2xl font-bold">
+            {formType === "login" ? "Welcome Back" : "Create an Account"}
+          </h1>
           <p className="text-gray-600 mt-2">
             {formType === "login"
               ? "Sign in to access your productivity dashboard"
@@ -46,12 +63,14 @@ const Auth = ({ isSignup = false }) => {
           </p>
         </div>
 
-        {/* Form ke type ko toggle karne ke liye button */}
+        {/* Form Type Toggle */}
         <div className="flex rounded-lg bg-gray-100 p-1 mb-6">
           <button
             onClick={() => setFormType("login")}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-              formType === "login" ? "bg-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+              formType === "login"
+                ? "bg-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
             }`}
           >
             Login
@@ -59,7 +78,9 @@ const Auth = ({ isSignup = false }) => {
           <button
             onClick={() => setFormType("signup")}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-              formType === "signup" ? "bg-white shadow-sm" : "text-gray-600 hover:text-gray-900"
+              formType === "signup"
+                ? "bg-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
             }`}
           >
             Sign Up
@@ -69,7 +90,9 @@ const Auth = ({ isSignup = false }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {formType === "signup" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
@@ -88,7 +111,9 @@ const Auth = ({ isSignup = false }) => {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400" />
@@ -106,7 +131,9 @@ const Auth = ({ isSignup = false }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400" />
@@ -143,20 +170,32 @@ const Auth = ({ isSignup = false }) => {
                   type="checkbox"
                   className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   Remember me
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-green-600 hover:text-green-500">
+                <a
+                  href="#"
+                  className="font-medium text-green-600 hover:text-green-500"
+                >
                   Forgot password?
                 </a>
               </div>
             </div>
           )}
 
-          <button type="submit" className="w-full btn-primary py-3">
-            {formType === "login" ? "Sign In" : "Create Account"}
+          {error && <div className="text-red-500">{error}</div>}
+
+          <button type="submit" className="w-full btn-primary py-3" disabled={loading}>
+            {loading
+              ? "Loading..."
+              : formType === "login"
+              ? "Sign In"
+              : "Create Account"}
           </button>
         </form>
 
@@ -175,21 +214,19 @@ const Auth = ({ isSignup = false }) => {
               type="button"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              <Chrome size={22} className="pr-2"/>
               Google
             </button>
             <button
               type="button"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              <Github size={22} className="pr-2"/>
               GitHub
             </button>
           </div>
         </div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default Auth
+export default Auth;

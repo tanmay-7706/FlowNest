@@ -1,49 +1,38 @@
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { RefreshCw } from "lucide-react";
+import getGeminiQuote from "../api/geminiQuote"; // ✅ default import
 
 const QuoteCarousel = () => {
-  const [quotes, setQuotes] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [quote, setQuote] = useState("");
+  const [author, setAuthor] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchQuotes = async () => {
-    setLoading(true)
+  const fetchNewQuote = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("https://zenquotes.io/api/random")
-      const data = await response.json()
-      setQuotes(data)
-      setCurrentIndex(0)
-      setError(null)
+      const { quote: newQuote, author: newAuthor } = await getGeminiQuote();
+      setQuote(newQuote);
+      setAuthor(newAuthor);
+      setError(null);
     } catch (err) {
-      setError("Failed to fetch quote. Please try again.")
-      // Fallback quotes
-      setQuotes([
-        { q: "Don't watch the clock, do what it does. Keep going.", a: "Sam Levenson" },
-        { q: "The secret of getting ahead is getting started.", a: "Mark Twain" },
-        { q: "It always seems impossible until it's done.", a: "Nelson Mandela" },
-      ])
+      console.error(err);
+      setError("Failed to fetch quote. Please try again.");
+      setQuote("Don't watch the clock, do what it does. Keep going.");
+      setAuthor("Sam Levenson");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchQuotes()
-  }, [])
-
-  const nextQuote = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length)
-  }
-
-  const prevQuote = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length)
-  }
+    fetchNewQuote(); // fetch once on mount
+  }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-12">
-      <div className="bg-blue-50 rounded-2xl p-8 shadow-sm relative">
+    <div className="w-full max-w-3xl mx-auto my-12">
+      <div className="bg-blue-50 rounded-2xl p-8 shadow-sm relative min-h-[200px]">
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
@@ -64,65 +53,35 @@ const QuoteCarousel = () => {
               className="text-center py-8"
             >
               <p className="text-red-500 mb-4">{error}</p>
-              <button onClick={fetchQuotes} className="btn-primary">
+              <button onClick={fetchNewQuote} className="btn-primary">
                 Try Again
               </button>
             </motion.div>
           ) : (
             <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: 20 }}
+              key={quote + author}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="text-center py-8"
+              className="text-center"
             >
-              <h2 className="text-2xl font-medium mb-6">"{quotes[currentIndex]?.q}"</h2>
-              <p className="text-gray-600 font-medium">{quotes[currentIndex]?.a}</p>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">"{quote}"</h2>
+              <p className="text-gray-600 font-medium">— {author}</p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {quotes.length > 1 && (
-          <>
-            <button
-              onClick={prevQuote}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-gray-900"
-              aria-label="Previous quote"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={nextQuote}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-gray-900"
-              aria-label="Next quote"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </>
-        )}
-
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-          {quotes.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full ${index === currentIndex ? "bg-blue-500" : "bg-blue-200"}`}
-              aria-label={`Go to quote ${index + 1}`}
-            />
-          ))}
-        </div>
-
         <button
-          onClick={fetchQuotes}
+          onClick={fetchNewQuote}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
           aria-label="Refresh quote"
         >
-          <RefreshCw size={18} />
+          <RefreshCw size={20} />
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default QuoteCarousel
+export default QuoteCarousel;
