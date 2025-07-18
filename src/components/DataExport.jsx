@@ -58,23 +58,31 @@ const DataExport = () => {
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-gray-100 dark:border-gray-700"
+    >
       <div className="flex items-center mb-4">
         <FileText className="h-6 w-6 text-blue-500 mr-2" />
-        <h2 className="text-xl font-semibold">Data Export</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Data Export</h2>
       </div>
 
-      <p className="text-gray-600 mb-6">
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
         Export all your FlowNest data including tasks, habits, goals, and reflections as a JSON file.
       </p>
 
-      <button onClick={exportData} disabled={loading} className="btn-primary flex items-center justify-center w-full">
+      <button
+        onClick={exportData}
+        disabled={loading}
+        className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex items-center justify-center w-full disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         <Download size={18} className="mr-2" />
         {loading ? "Exporting..." : "Export My Data"}
       </button>
 
-      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-        <p className="text-sm text-blue-800">
+      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+        <p className="text-sm text-blue-800 dark:text-blue-300">
           <strong>Note:</strong> The exported file will contain all your personal data. Keep it secure and only share it
           if necessary.
         </p>
