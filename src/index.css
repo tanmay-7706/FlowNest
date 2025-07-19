@@ -2,33 +2,179 @@
 
 @import "tailwindcss";
 
+
 :root {
   --primary: #4caf50;
   --primary-light: #81c784;
   --primary-dark: #388e3c;
   --accent: #2196f3;
-  --text-primary: #333333;
-  --text-secondary: #757575;
-  --background: #f5f7fa;
-  --card-bg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
-  color: var(--text-primary);
-  background-color: var(--background);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-all duration-300;
+    @apply bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+  }
+
+  .btn-secondary {
+    @apply bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg;
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-gray-100 dark:border-gray-700;
   }
 
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent;
+    @apply w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200;
   }
+
+  .page-container {
+    @apply min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300;
+  }
+
+  .content-wrapper {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  .section-title {
+    @apply text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8;
+  }
+
+  .widget-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .widget-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center;
+  }
+
+  .text-primary {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  .text-secondary {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .bg-primary {
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+
+  .bg-secondary {
+    @apply bg-white dark:bg-gray-700;
+  }
+}
+
+/* Calendar Styles */
+.react-calendar {
+  @apply w-full bg-white dark:bg-gray-800 border-0 rounded-lg overflow-hidden shadow-sm;
+  font-family: inherit;
+}
+
+.react-calendar__navigation {
+  @apply bg-gray-50 dark:bg-gray-700 p-4 border-b border-gray-200 dark:border-gray-600;
+}
+
+.react-calendar__navigation button {
+  @apply text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg p-2 transition-colors font-medium;
+  min-width: 44px;
+  background: none;
+  border: none;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  @apply bg-gray-100 dark:bg-gray-600;
+}
+
+.react-calendar__month-view__weekdays {
+  @apply bg-gray-100 dark:bg-gray-700 text-center;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  @apply text-gray-600 dark:text-gray-300 font-medium py-3 text-sm;
+}
+
+.react-calendar__tile {
+  @apply text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors p-3 text-center relative;
+  background: none;
+  border: none;
+  min-height: 60px;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  @apply bg-blue-50 dark:bg-blue-900/20;
+}
+
+.react-calendar__tile--active {
+  @apply bg-green-500 text-white;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-green-600;
+}
+
+.react-calendar__tile--now {
+  @apply bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  @apply bg-yellow-200 dark:bg-yellow-900/50;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Animation improvements */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth transitions for dark mode */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }
