@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
@@ -9,10 +11,12 @@ import Services from "./pages/Services"
 import Blog from "./pages/Blog"
 import Auth from "./pages/Auth"
 import Settings from "./pages/Settings"
+import Profile from "./pages/Profile"
 import { AuthProvider } from "./context/AuthContext"
 import ProtectedRoute from "./components/ProtectedRoute"
 import Analytics from "./pages/Analytics"
 import CalendarView from "./pages/CalendarView"
+import Tips from "./pages/Tips"
 
 function App() {
   const [widgets, setWidgets] = useState({
@@ -36,7 +40,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
           <Navbar />
           <AnimatePresence mode="wait">
             <Routes>
@@ -68,6 +72,14 @@ function App() {
               <Route path="/login" element={<Auth />} />
               <Route path="/signup" element={<Auth isSignup={true} />} />
               <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/settings"
                 element={
                   <ProtectedRoute>
@@ -88,6 +100,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CalendarView />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/tips"
+                element={
+                  <ProtectedRoute>
+                    <Tips />
                   </ProtectedRoute>
                 }
               />
