@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Plus, Trash2, Edit2, Save, Target } from "lucide-react"
+import { FaPlus, FaTrash, FaEdit, FaSave, FaBullseye } from "react-icons/fa"
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore"
 import { db } from "../utils/firebase"
 import { useAuth } from "../context/AuthContext"
@@ -13,7 +13,7 @@ const GoalTracker = () => {
     description: "",
     targetValue: 100,
     currentValue: 0,
-    type: "weekly", // weekly or monthly
+    type: "weekly",
     category: "personal",
   })
   const [editingGoal, setEditingGoal] = useState(null)
@@ -86,19 +86,19 @@ const GoalTracker = () => {
     if (percentage >= 100) return "bg-green-500"
     if (percentage >= 75) return "bg-blue-500"
     if (percentage >= 50) return "bg-yellow-500"
-    return "bg-gray-300"
+    return "bg-gray-300 dark:bg-gray-600"
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card h-fit">
       <div className="flex items-center mb-4">
-        <Target className="h-6 w-6 text-green-500 mr-2" />
-        <h2 className="text-xl font-semibold">Goal Tracker</h2>
+        <FaBullseye className="h-5 w-5 text-green-500 mr-2" />
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Goal Tracker</h2>
       </div>
 
       {/* Add Goal Form */}
       <form onSubmit={addGoal} className="mb-6 space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             type="text"
             value={newGoal.title}
@@ -120,7 +120,7 @@ const GoalTracker = () => {
           value={newGoal.description}
           onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
           placeholder="Goal description..."
-          className="input-field min-h-[80px]"
+          className="input-field min-h-[80px] resize-none"
         />
         <div className="grid grid-cols-2 gap-3">
           <input
@@ -132,54 +132,65 @@ const GoalTracker = () => {
             min="1"
           />
           <button type="submit" disabled={loading} className="btn-primary flex items-center justify-center">
-            <Plus size={18} className="mr-2" />
+            <FaPlus size={16} className="mr-2" />
             {loading ? "Adding..." : "Add Goal"}
           </button>
         </div>
       </form>
 
       {/* Goals List */}
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-64 overflow-y-auto">
         {goals.length > 0 ? (
           goals.map((goal) => (
-            <div key={goal.id} className="p-4 bg-gray-50 rounded-lg border border-gray-100">
+            <div
+              key={goal.id}
+              className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600"
+            >
               <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-medium">{goal.title}</h3>
-                  <p className="text-sm text-gray-600">{goal.description}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-gray-900 dark:text-white truncate">{goal.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{goal.description}</p>
                   <span
-                    className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${
-                      goal.type === "weekly" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
+                    className={`inline-block px-2 py-1 text-xs rounded-full mt-2 ${
+                      goal.type === "weekly"
+                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                        : "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
                     }`}
                   >
                     {goal.type}
                   </span>
                 </div>
-                <div className="flex space-x-2">
-                  <button onClick={() => setEditingGoal(goal)} className="p-1 text-gray-500 hover:text-blue-500">
-                    <Edit2 size={16} />
+                <div className="flex space-x-2 ml-3">
+                  <button
+                    onClick={() => setEditingGoal(goal)}
+                    className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                  >
+                    <FaEdit size={14} />
                   </button>
-                  <button onClick={() => deleteGoal(goal.id)} className="p-1 text-gray-500 hover:text-red-500">
-                    <Trash2 size={16} />
+                  <button
+                    onClick={() => deleteGoal(goal.id)}
+                    className="p-1 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                  >
+                    <FaTrash size={14} />
                   </button>
                 </div>
               </div>
 
               {/* Progress Bar */}
               <div className="mb-3">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
                   <span>Progress</span>
                   <span>
                     {goal.currentValue} / {goal.targetValue}
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(getProgressPercentage(goal.currentValue, goal.targetValue))}`}
                     style={{ width: `${getProgressPercentage(goal.currentValue, goal.targetValue)}%` }}
                   ></div>
                 </div>
-                <div className="text-right text-sm text-gray-600 mt-1">
+                <div className="text-right text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {getProgressPercentage(goal.currentValue, goal.targetValue).toFixed(1)}%
                 </div>
               </div>
@@ -189,7 +200,7 @@ const GoalTracker = () => {
                 <input
                   type="number"
                   placeholder="Update progress"
-                  className="input-field flex-grow"
+                  className="input-field flex-grow text-sm"
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       const value = Number.parseInt(e.target.value) || 0
@@ -205,15 +216,18 @@ const GoalTracker = () => {
                     updateGoal(goal.id, { currentValue: value })
                     input.value = ""
                   }}
-                  className="btn-primary !py-2 !px-3"
+                  className="btn-primary px-3 py-2"
                 >
-                  <Save size={16} />
+                  <FaSave size={14} />
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center py-4">No goals yet. Set your first goal above!</p>
+          <div className="text-center py-8">
+            <FaBullseye className="h-8 w-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No goals yet. Set your first goal above!</p>
+          </div>
         )}
       </div>
     </motion.div>

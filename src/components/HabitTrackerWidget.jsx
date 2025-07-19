@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Plus, Trash2 } from "lucide-react"
-import { useAuth } from "@/context/AuthContext"
-import { db } from "@/utils/firebase"
+import { FaPlus, FaTrash } from "react-icons/fa"
+import { useAuth } from "../context/AuthContext"
+import { db } from "../utils/firebase"
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore"
 
 const HabitTrackerWidget = () => {
@@ -16,7 +16,7 @@ const HabitTrackerWidget = () => {
   useEffect(() => {
     if (!currentUser) {
       setLoading(false)
-      return // Don't proceed if no user
+      return
     }
 
     const habitsCollectionRef = collection(db, "users", currentUser.uid, "habits")
@@ -37,7 +37,7 @@ const HabitTrackerWidget = () => {
       },
     )
 
-    return () => unsubscribe() // Cleanup on unmount
+    return () => unsubscribe()
   }, [currentUser])
 
   const addHabit = async (e) => {
@@ -91,16 +91,35 @@ const HabitTrackerWidget = () => {
   }
 
   if (loading) {
-    return <div className="card">Loading habits...</div>
+    return (
+      <div className="card h-fit">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
+          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div className="card">Error: {error}</div>
+    return (
+      <div className="card h-fit">
+        <h2 className="widget-title">Habit Tracker</h2>
+        <div className="text-center py-6">
+          <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
-      <h2 className="text-xl font-semibold mb-4">Habit Tracker</h2>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card h-fit">
+      <h2 className="widget-title">Habit Tracker</h2>
 
       <form onSubmit={addHabit} className="mb-6 flex gap-2">
         <input
@@ -110,53 +129,65 @@ const HabitTrackerWidget = () => {
           placeholder="Add a new habit..."
           className="input-field flex-grow"
         />
-        <button type="submit" className="btn-primary !py-2 !px-3">
-          <Plus size={20} />
+        <button type="submit" className="btn-primary px-4 py-2">
+          <FaPlus size={16} />
         </button>
       </form>
 
       {habits.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-left pb-2 font-medium text-gray-500">Habit</th>
-                {daysOfWeek.map((day, index) => (
-                  <th key={index} className="text-center pb-2 font-medium text-gray-500 w-10">
-                    {day}
-                  </th>
-                ))}
-                <th className="w-10"></th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="min-w-full">
+            <div className="flex items-center pb-3 border-b border-gray-200 dark:border-gray-700 mb-4">
+              <div className="flex-1 text-left">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Habit</span>
+              </div>
+              {daysOfWeek.map((day, index) => (
+                <div key={index} className="w-10 text-center">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{day}</span>
+                </div>
+              ))}
+              <div className="w-10"></div>
+            </div>
+
+            <div className="space-y-3">
               {habits.map((habit) => (
-                <tr key={habit.id} className="border-t border-gray-100">
-                  <td className="py-3 pr-4">{habit.name}</td>
+                <div key={habit.id} className="flex items-center">
+                  <div className="flex-1 pr-4 min-w-0">
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate block">
+                      {habit.name}
+                    </span>
+                  </div>
                   {habit.days.map((completed, dayIndex) => (
-                    <td key={dayIndex} className="text-center">
+                    <div key={dayIndex} className="w-10 flex justify-center">
                       <button
                         onClick={() => toggleDay(habit.id, dayIndex)}
-                        className={`w-8 h-8 rounded-full ${
-                          completed ? "bg-green-500 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                        className={`w-8 h-8 rounded-full transition-colors ${
+                          completed
+                            ? "bg-green-500 text-white hover:bg-green-600"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600"
                         }`}
                       >
                         {completed ? "✓" : ""}
                       </button>
-                    </td>
+                    </div>
                   ))}
-                  <td>
-                    <button onClick={() => deleteHabit(habit.id)} className="text-gray-400 hover:text-red-500 p-2">
-                      <Trash2 size={16} />
+                  <div className="w-10 flex justify-center">
+                    <button
+                      onClick={() => deleteHabit(habit.id)}
+                      className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors p-2"
+                    >
+                      <FaTrash size={14} />
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
       ) : (
-        <p className="text-gray-500 text-center py-4">No habits yet. Add one above!</p>
+        <div className="text-center py-8">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No habits yet. Add one above!</p>
+        </div>
       )}
     </motion.div>
   )

@@ -1,166 +1,151 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Plus, Trash2 } from "lucide-react";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import { db } from "../utils/firebase";
-import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { FaPlus, FaTrash } from "react-icons/fa"
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore"
+import { db } from "../utils/firebase"
+import { useAuth } from "../context/AuthContext"
 
 const TodoWidget = () => {
-  const { currentUser } = useAuth();
-  const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState("");
-  const [priority, setPriority] = useState("medium");
+  const { currentUser } = useAuth()
+  const [tasks, setTasks] = useState([])
+  const [newTask, setNewTask] = useState("")
+  const [priority, setPriority] = useState("medium")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) return
 
-    const todosRef = collection(db, "users", currentUser.uid, "todos");
-
-    const q = query(todosRef, orderBy("order"));
+    const q = query(collection(db, "todos"), where("userId", "==", currentUser.uid))
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const tasksData = [];
+      const tasksData = []
       querySnapshot.forEach((doc) => {
-        tasksData.push({ id: doc.id, ...doc.data() });
-      });
-      setTasks(tasksData);
-    });
+        tasksData.push({ id: doc.id, ...doc.data() })
+      })
+      setTasks(tasksData.sort((a, b) => a.order - b.order))
+    })
 
-    return () => unsubscribe();
-  }, [currentUser]);
+    return () => unsubscribe()
+  }, [currentUser])
 
   const addTask = async (e) => {
-    e.preventDefault();
-    if (!newTask.trim()) return;
+    e.preventDefault()
+    if (!newTask.trim()) return
 
     try {
-      const todosRef = collection(db, "users", currentUser.uid, "todos");
-      await addDoc(todosRef, {
+      await addDoc(collection(db, "todos"), {
         text: newTask,
         completed: false,
         priority,
         order: priority === "high" ? 1 : priority === "medium" ? 2 : 3,
-        createdAt: new Date(),
-      });
-      setNewTask("");
-      setPriority("medium");
+        userId: currentUser.uid,
+      })
+      setNewTask("")
+      setPriority("medium")
     } catch (error) {
-      console.error("Error adding task:", error);
+      console.error("Error adding task:", error)
     }
-  };
+  }
 
   const toggleComplete = async (id) => {
     try {
-      const taskRef = doc(db, "users", currentUser.uid, "todos", id);
-      const task = tasks.find((task) => task.id === id);
+      const taskRef = doc(db, "todos", id)
+      const task = tasks.find((task) => task.id === id)
       if (task) {
-        await updateDoc(taskRef, { completed: !task.completed });
+        await updateDoc(taskRef, { completed: !task.completed })
       }
     } catch (error) {
-      console.error("Error updating task:", error);
+      console.error("Error updating task:", error)
     }
-  };
+  }
 
   const deleteTask = async (id) => {
     try {
-      const taskRef = doc(db, "users", currentUser.uid, "todos", id);
-      await deleteDoc(taskRef);
+      const taskRef = doc(db, "todos", id)
+      await deleteDoc(taskRef)
     } catch (error) {
-      console.error("Error deleting task:", error);
+      console.error("Error deleting task:", error)
     }
-  };
+  }
 
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
     }
-  };
+  }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="card"
-    >
-      <h2 className="text-xl font-semibold mb-4">To-Do</h2>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card h-fit">
+      <h2 className="widget-title">To-Do</h2>
 
-      <form onSubmit={addTask} className="mb-4 flex gap-2">
+      <form onSubmit={addTask} className="mb-4 space-y-3">
         <input
           type="text"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Add a new task..."
-          className="input-field flex-grow"
+          className="input-field"
         />
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-          className="input-field w-24"
-        >
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-        <button type="submit" className="btn-primary !py-2 !px-3">
-          <Plus size={20} />
-        </button>
+        <div className="flex gap-2">
+          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="input-field flex-1">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <button type="submit" className="btn-primary px-4 py-2">
+            <FaPlus size={16} />
+          </button>
+        </div>
       </form>
 
-      <ul className="space-y-2">
+      <div className="space-y-2 max-h-64 overflow-y-auto">
         {tasks.map((task) => (
-          <motion.li
+          <motion.div
             key={task.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-lg shadow-sm"
+            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-lg"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <input
                 type="checkbox"
                 checked={task.completed}
                 onChange={() => toggleComplete(task.id)}
-                className="h-5 w-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
+                className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-green-500 focus:ring-green-500 dark:focus:ring-green-400"
               />
-              <span className={`${task.completed ? "line-through text-gray-400" : ""}`}>
+              <span
+                className={`flex-1 text-sm ${task.completed ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-900 dark:text-gray-100"} truncate`}
+              >
                 {task.text}
               </span>
-              <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)}`}>
+              <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)} flex-shrink-0`}>
                 {task.priority}
               </span>
             </div>
             <button
               onClick={() => deleteTask(task.id)}
-              className="text-gray-400 hover:text-red-500"
+              className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 ml-2"
             >
-              <Trash2 size={16} />
+              <FaTrash size={14} />
             </button>
-          </motion.li>
+          </motion.div>
         ))}
         {tasks.length === 0 && (
-          <p className="text-gray-500 text-center py-4">
-            No tasks yet. Add one above!
-          </p>
+          <div className="text-center py-8">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No tasks yet. Add one above!</p>
+          </div>
         )}
-      </ul>
+      </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default TodoWidget;
+export default TodoWidget
