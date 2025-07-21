@@ -55,7 +55,7 @@ const Analytics = () => {
     }
   }, [currentUser])
 
-  // Process data for charts
+  // Processing data for charts -->
   const getTaskCompletionData = () => {
     const completed = analyticsData.tasks.filter((task) => task.completed).length
     const pending = analyticsData.tasks.filter((task) => !task.completed).length

@@ -35,14 +35,14 @@ const Profile = () => {
     totalHabits: 0,
     totalGoals: 0,
     totalReflections: 0,
-    streak: 7, // Mock streak data
+    streak: 7, // Mock streak data 
   })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!currentUser) return
 
-    // Initialize profile data
+    // Initializing profile data -->
     setProfileData({
       displayName: currentUser.displayName || getUserDisplayName(),
       bio: "Productivity enthusiast focused on building better habits and achieving goals.",
@@ -50,7 +50,7 @@ const Profile = () => {
       website: "https://flow-nest.vercel.app",
     })
 
-    // Fetch user statistics from Firebase
+    // Fetch user statistics from Firebase Firestore -->
     const collections = ["todos", "habits", "goals", "reflections"]
     const unsubscribes = []
 
@@ -112,7 +112,7 @@ const Profile = () => {
   }
 
   const getJoinedDate = () => {
-    // Use creation time if available, otherwise use a mock date
+    // Use creation time if available, otherwise use a mock date -->
     if (currentUser?.metadata?.creationTime) {
       return new Date(currentUser.metadata.creationTime).toLocaleDateString("en-US", {
         year: "numeric",
@@ -120,7 +120,7 @@ const Profile = () => {
         day: "numeric",
       })
     }
-    return "June 15, 2025" // Mock date
+    return "June 15, 2025" // Mock date 
   }
 
   const getCompletionRate = () => {
@@ -133,12 +133,12 @@ const Profile = () => {
 
     setSaving(true)
     try {
-      // Update Firebase Auth profile
+      // Updating Firebase Auth profile -->
       await updateProfile(currentUser, {
         displayName: profileData.displayName,
       })
 
-      // Force a refresh of the auth state to update the navbar
+      // Force a refresh of the auth state to update the navbar -->
       window.location.reload()
 
       setIsEditing(false)
@@ -153,7 +153,7 @@ const Profile = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false)
-    // Reset to original data
+    // Reseting to original data -->
     setProfileData({
       displayName: currentUser.displayName || getUserDisplayName(),
       bio: "Productivity enthusiast focused on building better habits and achieving goals.",

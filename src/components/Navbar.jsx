@@ -29,7 +29,7 @@ const Navbar = () => {
       return currentUser.displayName
     }
     if (currentUser?.email) {
-      // Extract name from email or use a default
+      // Extracting name from email or use a default -->
       const emailName = currentUser.email.split("@")[0]
       return emailName.charAt(0).toUpperCase() + emailName.slice(1)
     }

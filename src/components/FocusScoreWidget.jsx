@@ -16,13 +16,13 @@ const FocusScoreWidget = () => {
 
     const unsubscribes = []
 
-    // Listen to todos
+    // Todos -->
     const todosQuery = query(collection(db, "todos"), where("userId", "==", currentUser.uid))
     const unsubscribeTodos = onSnapshot(todosQuery, (snapshot) => {
       calculateFocusScore(snapshot, "todos")
     })
 
-    // Listen to habits
+    // Habits -->
     const habitsQuery = query(collection(db, "habits"), where("userId", "==", currentUser.uid))
     const unsubscribeHabits = onSnapshot(habitsQuery, (snapshot) => {
       calculateFocusScore(snapshot, "habits")
@@ -51,7 +51,7 @@ const FocusScoreWidget = () => {
         score += Math.round((completedTodos.length / totalTodos) * 50)
       }
 
-      // Calculate streak based on recent completions
+      // Calculate streak based on recent completions -->
       const recentCompletions = completedTodos.filter((todo) => {
         const completedDate = new Date(todo.completedAt || todo.createdAt)
         const daysDiff = Math.floor((new Date() - completedDate) / (1000 * 60 * 60 * 24))

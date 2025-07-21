@@ -22,7 +22,7 @@ const DataExport = () => {
         data: {},
       }
 
-      // Fetch data from each collection
+      // Fetch data from each collection -->
       for (const collectionName of collections) {
         const q = query(collection(db, collectionName), where("userId", "==", currentUser.uid))
 
@@ -36,7 +36,7 @@ const DataExport = () => {
         exportData.data[collectionName] = collectionData
       }
 
-      // Create and download JSON file
+      // Creating and downloading JSON file -->
       const dataStr = JSON.stringify(exportData, null, 2)
       const dataBlob = new Blob([dataStr], { type: "application/json" })
       const url = URL.createObjectURL(dataBlob)

@@ -33,7 +33,7 @@ const Settings = ({ widgets, updateWidgets }) => {
 
   const handleSaveSettings = () => {
     updateWidgets(localWidgets)
-    // In a real app, we would also save other settings
+    // In a real app, we would also save other settings like notifications and pomodoro settings -->
     alert("Settings saved successfully!")
   }
 

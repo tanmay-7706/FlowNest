@@ -89,7 +89,7 @@ const QuoteCarousel = () => {
 
   const refreshQuotes = () => {
     setIsRefreshing(true)
-    // Simulate API call
+    // Simulate API call -->
     setTimeout(() => {
       setCurrentQuote(Math.floor(Math.random() * quotes.length))
       setIsRefreshing(false)

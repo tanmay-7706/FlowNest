@@ -101,7 +101,7 @@ const Services = () => {
     return colors[color] || colors.blue
   }
 
-  // Group tasks by priority
+  // Grouping tasks by priority -->
   const highPriorityTasks = tasks.filter((task) => task.priority === "high")
   const mediumPriorityTasks = tasks.filter((task) => task.priority === "medium")
   const lowPriorityTasks = tasks.filter((task) => task.priority === "low")

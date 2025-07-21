@@ -169,7 +169,7 @@ const Tips = () => {
 
   useEffect(() => {
     setLoading(true)
-    // Simulate API call
+    // Simulating API call -->
     setTimeout(() => {
       const filteredTips =
         selectedCategory === "all"

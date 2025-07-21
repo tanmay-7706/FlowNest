@@ -45,11 +45,11 @@ const RecentActivityWidget = () => {
           });
         });
 
-        // Update activities for this collection
+        // Update activities for this collection -->
         allActivities = allActivities.filter((activity) => activity.type !== name);
         allActivities = [...allActivities, ...collectionActivities];
 
-        // Sort by timestamp and take latest 5
+        // Sort by timestamp and take latest 5 activities -->
         allActivities.sort((a, b) => {
           const aTime = a.timestamp ? new Date(a.timestamp) : new Date(0);
           const bTime = b.timestamp ? new Date(b.timestamp) : new Date(0);

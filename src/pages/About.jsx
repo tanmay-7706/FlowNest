@@ -24,31 +24,31 @@ const About = () => {
   ]
 
   const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Product Manager",
-      company: "TechCorp",
-      quote:
-        "FlowNest has completely transformed how I manage my daily tasks. The intuitive design and powerful features make productivity feel effortless.",
-      rating: 5,
-    },
-    {
-      name: "Michael Chen",
-      role: "Freelance Designer",
-      company: "Independent",
-      quote:
-        "As a freelancer, staying organized is crucial. FlowNest's habit tracking and goal setting features have helped me build better work routines.",
-      rating: 5,
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Marketing Director",
-      company: "StartupXYZ",
-      quote:
-        "The analytics dashboard gives me incredible insights into my productivity patterns. I can now optimize my workflow like never before.",
-      rating: 5,
-    },
-  ]
+  {
+    name: "Peter Parker",
+    role: "Photographer",
+    company: "Daily Bugle",
+    quote:
+      "FlowNest has completely transformed how I manage my daily tasks. The intuitive design and powerful features make productivity feel effortless.",
+    rating: 5,
+  },
+  {
+    name: "Natasha Romanoff",
+    role: "Intelligence Specialist",
+    company: "S.H.I.E.L.D.",
+    quote:
+      "As a freelancer, staying organized is crucial. FlowNest's habit tracking and goal setting features have helped me build better work routines.",
+    rating: 5,
+  },
+  {
+    name: "Bruce Banner",
+    role: "Research Scientist",
+    company: "Avengers Initiative",
+    quote:
+      "The analytics dashboard gives me incredible insights into my productivity patterns. I can now optimize my workflow like never before.",
+    rating: 5,
+  },
+]
 
   const achievements = [
     { icon: FaUsers, number: "50K+", label: "Active Users" },

@@ -18,14 +18,14 @@ const ReflectionWidget = () => {
         const reflections = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          date: doc.data().date.toDate(), // Convert Firebase Timestamp to JavaScript Date
+          date: doc.data().date.toDate(), // Converting Firebase Timestamp to JavaScript Date 
         }))
         setSavedReflections(reflections)
       })
 
-      return () => unsubscribe() // Cleanup on unmount
+      return () => unsubscribe() // Cleanup on unmounting 
     } else {
-      setSavedReflections([]) // Clear reflections if no user
+      setSavedReflections([]) // Clear reflections if no user is logged in 
     }
   }, [currentUser])
 
@@ -39,7 +39,7 @@ const ReflectionWidget = () => {
           text: reflection,
           date: new Date(),
         })
-        setReflection("") // Clear the input after saving
+        setReflection("") // Clearing the input after saving 
       } catch (error) {
         console.error("Error saving reflection:", error)
       }

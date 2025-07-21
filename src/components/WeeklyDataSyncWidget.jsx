@@ -22,12 +22,12 @@ const WeeklyDataSyncWidget = () => {
 
     const unsubscribes = []
 
-    // Get start of current week
+    // Get start of current week -->
     const now = new Date()
     const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()))
     startOfWeek.setHours(0, 0, 0, 0)
 
-    // Listen to todos
+    // Todos -->
     const todosQuery = query(collection(db, "todos"), where("userId", "==", currentUser.uid))
     const unsubscribeTodos = onSnapshot(todosQuery, (snapshot) => {
       let completed = 0
@@ -49,7 +49,7 @@ const WeeklyDataSyncWidget = () => {
       setWeeklyData((prev) => ({ ...prev, tasksCompleted: completed, tasksPending: pending }))
     })
 
-    // Listen to habits
+    // Habits -->
     const habitsQuery = query(collection(db, "habits"), where("userId", "==", currentUser.uid))
     const unsubscribeHabits = onSnapshot(habitsQuery, (snapshot) => {
       let totalHabits = 0
@@ -70,7 +70,7 @@ const WeeklyDataSyncWidget = () => {
       }))
     })
 
-    // Listen to goals
+    // Goals -->
     const goalsQuery = query(collection(db, "goals"), where("userId", "==", currentUser.uid))
     const unsubscribeGoals = onSnapshot(goalsQuery, (snapshot) => {
       let totalProgress = 0

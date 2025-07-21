@@ -89,7 +89,7 @@ const Blog = () => {
     return foundMood ? foundMood.emoji : "😐"
   }
 
-  // Sample reflection cards for better layout
+  // Sample reflection cards for better layout of the page -->
   const sampleReflections = [
     {
       id: "sample1",

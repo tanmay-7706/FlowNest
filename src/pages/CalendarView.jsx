@@ -38,7 +38,7 @@ const CalendarView = () => {
     dueTime: "09:00",
   })
 
-  // Mock Google Calendar data for demonstration
+  // Mocking Google Calendar data for demonstration -->
   const mockEvents = [
     {
       id: 1,
@@ -69,7 +69,7 @@ const CalendarView = () => {
   useEffect(() => {
     if (!currentUser) return
 
-    // Listen to calendar events from Firebase
+    // Taking calendar events from Firebase Firestore -->
     const q = query(
       collection(db, "calendar-events"),
       where("userId", "==", currentUser.uid),
@@ -91,7 +91,7 @@ const CalendarView = () => {
         })
       })
 
-      // Combine Firebase events with mock events
+      // Combining Firebase events with mock events -->
       setEvents([...mockEvents, ...firebaseEvents])
     })
 
@@ -100,7 +100,7 @@ const CalendarView = () => {
 
   const connectGoogleCalendar = async () => {
     setLoading(true)
-    // Simulate Google OAuth flow
+    // Simulating Google OAuth flow -->
     setTimeout(() => {
       setIsGoogleConnected(true)
       setLoading(false)
@@ -141,7 +141,7 @@ const CalendarView = () => {
         createdAt: new Date().toISOString(),
       })
 
-      // Reset form
+      // Reset form -->
       setNewTask({
         title: "",
         description: "",
@@ -152,7 +152,7 @@ const CalendarView = () => {
       setShowTaskForm(false)
       setShowSuccess(true)
 
-      // Hide success message after 3 seconds
+      // Hide success message after 3 seconds -->
       setTimeout(() => setShowSuccess(false), 3000)
     } catch (error) {
       console.error("Error adding task:", error)
@@ -230,12 +230,12 @@ const CalendarView = () => {
       "December",
     ]
 
-    // Empty cells for days before the first day of the month
+    // Empty cells for days before the first day of the month -->
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(<div key={`empty-${i}`} className="h-28 p-2 border border-gray-100 dark:border-gray-700"></div>)
     }
 
-    // Days of the month
+    // Days of the month -->
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day)
       const dayEvents = getEventsForDate(date)

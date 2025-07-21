@@ -22,7 +22,7 @@ const Auth = ({ isSignup = false }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Determine form type based on URL path or prop
+  // Determining form type based on URL path or prop -->
   const [formType, setFormType] = useState(() => {
     if (location.pathname === "/signup") return "signup"
     if (location.pathname === "/login") return "login"
@@ -39,7 +39,7 @@ const Auth = ({ isSignup = false }) => {
   const [loading, setLoading] = useState(false)
   const { signup, login } = useAuth()
 
-  // Update form type when URL changes
+  // Updating form type when URL changes -->
   useEffect(() => {
     if (location.pathname === "/signup") {
       setFormType("signup")
@@ -117,7 +117,7 @@ const Auth = ({ isSignup = false }) => {
       email: "",
       password: "",
     })
-    // Update URL without causing a page reload
+    // Updating URL without causing a page reload -->
     navigate(type === "signup" ? "/signup" : "/login", { replace: true })
   }
 

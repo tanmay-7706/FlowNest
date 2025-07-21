@@ -91,12 +91,20 @@ const Home = ({ widgets }) => {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-8 rounded-2xl shadow-lg border border-blue-100 dark:border-blue-800"
+                className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-2 rounded-2xl shadow-lg border border-blue-100 dark:border-blue-800"
               >
+                {/* Light mode image */}
                 <img
-                  src="/placeholder.svg?height=300&width=400"
-                  alt="Productivity Dashboard"
-                  className="w-full h-auto rounded-xl"
+                  src="/ProductivityDashboard_Light.png"
+                  alt="Productivity Dashboard Light"
+                  className="block dark:hidden w-full h-auto rounded-xl"
+                />
+
+                {/* Dark mode image */}
+                <img
+                  src="/ProductivityDashboard_Dark.png"
+                  alt="Productivity Dashboard Dark"
+                  className="hidden dark:block w-full h-auto rounded-xl"
                 />
               </motion.div>
             </div>

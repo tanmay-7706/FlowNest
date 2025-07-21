@@ -31,7 +31,7 @@ function App() {
       setWidgets(JSON.parse(savedWidgets))
     }
 
-    // Prevent flash of unstyled content
+    // Preventing flash of unstyled content -->
     const timer = setTimeout(() => {
       setIsLoading(false)
       document.body.classList.remove("preload")
@@ -40,7 +40,7 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Add preload class to prevent transitions on initial load
+  // Add preload class to prevent transitions on initial load -->
   useEffect(() => {
     document.body.classList.add("preload")
   }, [])
