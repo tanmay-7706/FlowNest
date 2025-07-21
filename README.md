@@ -1,12 +1,47 @@
-# React + Vite
+🌿 FlowNest – The Personal Productivity Ecosystem
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to FlowNest, a modern and modular productivity dashboard built to help you stay organized, build better habits, and get meaningful work done — every day.
 
-Currently, two official plugins are available:
+🚀 Live Demo: https://flow-nest.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+⸻
 
-## Expanding the ESLint configuration
+🛠 Tech Stack
+	•	React.js – frontend framework
+	•	Tailwind CSS – fast, utility-first styling
+	•	Framer Motion – animations and transitions
+	•	Firebase Auth + Firestore – user authentication and real-time data
+	•	React Icons – for clean, consistent icons
+	•	Vite – for blazing-fast development
+	•	Google Gemini API – for daily inspirational quotes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+⸻
+
+✨ Features
+	•	✅ Modular Productivity Tools
+	•	Habit tracking
+	•	Project planning
+	•	Time blocking
+	•	Daily motivation
+	•	🌙 Dark Mode (fully supported)
+	•	📊 Analytics Dashboard
+	•	Weekly goals
+	•	Time tracking
+	•	Productivity trends
+	•	🧠 AI Integration
+	•	Daily inspirational quotes from Google Gemini API
+	•	🔐 Authentication
+	•	Firebase login (Email + future support for Google/GitHub/Apple)
+	•	💡 Fully Responsive
+	•	Works beautifully on mobile, tablet, and desktop
+	•	💬 Clean UI & UX
+	•	Modern design, subtle animations, and smooth transitions
+
+⸻
+
+📦 Project Structure (at a glance)
+	•	components/ → Reusable UI elements
+	•	pages/ → Core routes like Home, About, Dashboard
+	•	firebase.js → Firebase setup
+	•	api/ → API routes including Gemini quote generator
+	•	styles/ → TailwindCSS-based styling
