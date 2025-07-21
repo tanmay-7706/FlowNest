@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext, useState, useEffect } from "react"
 import {
   onAuthStateChanged,
@@ -49,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     login,
     logout,
-    loading, // ✅ added
+    loading, 
   }
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
