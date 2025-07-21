@@ -23,6 +23,8 @@ import {
   FaStickyNote,
   FaBullseye,
 } from "react-icons/fa"
+import LightImg from "../assets/ProductivityDashboard_Light.png";
+import DarkImg from "../assets/ProductivityDashboard_Dark.png";
 
 const Home = ({ widgets }) => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -87,7 +89,7 @@ const Home = ({ widgets }) => {
                   </button>
                 </motion.div>
               </div>
-              <motion.div
+               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -95,16 +97,16 @@ const Home = ({ widgets }) => {
               >
                 {/* Light mode image */}
                 <img
-                  src="/ProductivityDashboard_Light.png" 
+                  src={LightImg}
                   alt="Productivity Dashboard Light"
-                  className="block dark:hidden w-full h-auto rounded-xl"
+                  className="w-full h-auto rounded-xl block dark:hidden"
                 />
 
                 {/* Dark mode image */}
                 <img
-                  src="/ProductivityDashboard_Dark.png"
+                  src={DarkImg}
                   alt="Productivity Dashboard Dark"
-                  className="hidden dark:block w-full h-auto rounded-xl"
+                  className="w-full h-auto rounded-xl hidden dark:block"
                 />
               </motion.div>
             </div>
