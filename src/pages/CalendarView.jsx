@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../context/AuthContext"
+import { collection, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore"
+import { db } from "../utils/firebase"
 import {
   FaPlus,
   FaCalendarAlt,
@@ -13,6 +15,8 @@ import {
   FaChevronRight,
   FaTasks,
   FaBell,
+  FaTimes,
+  FaSave,
 } from "react-icons/fa"
 
 const CalendarView = () => {
@@ -24,11 +28,14 @@ const CalendarView = () => {
   const [isGoogleConnected, setIsGoogleConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showTaskForm, setShowTaskForm] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     priority: "medium",
-    dueDate: "",
+    dueDate: new Date().toISOString().split("T")[0],
+    dueTime: "09:00",
   })
 
   // Mock Google Calendar data for demonstration
@@ -60,20 +67,42 @@ const CalendarView = () => {
   ]
 
   useEffect(() => {
-    // Simulate loading Google Calendar events
-    setLoading(true)
-    setTimeout(() => {
-      setEvents(mockEvents)
-      setLoading(false)
-    }, 1000)
-  }, [currentMonth, currentYear])
+    if (!currentUser) return
+
+    // Listen to calendar events from Firebase
+    const q = query(
+      collection(db, "calendar-events"),
+      where("userId", "==", currentUser.uid),
+      orderBy("createdAt", "desc"),
+    )
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const firebaseEvents = []
+      querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        firebaseEvents.push({
+          id: doc.id,
+          title: data.title,
+          description: data.description,
+          start: new Date(data.dueDate + "T" + data.dueTime),
+          end: new Date(data.dueDate + "T" + data.dueTime),
+          type: "task",
+          priority: data.priority,
+        })
+      })
+
+      // Combine Firebase events with mock events
+      setEvents([...mockEvents, ...firebaseEvents])
+    })
+
+    return () => unsubscribe()
+  }, [currentUser, currentMonth, currentYear])
 
   const connectGoogleCalendar = async () => {
     setLoading(true)
     // Simulate Google OAuth flow
     setTimeout(() => {
       setIsGoogleConnected(true)
-      setEvents(mockEvents)
       setLoading(false)
     }, 2000)
   }
@@ -96,6 +125,43 @@ const CalendarView = () => {
     }
   }
 
+  const handleAddTask = async (e) => {
+    e.preventDefault()
+    if (!newTask.title.trim() || !currentUser) return
+
+    setSaving(true)
+    try {
+      await addDoc(collection(db, "calendar-events"), {
+        title: newTask.title,
+        description: newTask.description,
+        priority: newTask.priority,
+        dueDate: newTask.dueDate,
+        dueTime: newTask.dueTime,
+        userId: currentUser.uid,
+        createdAt: new Date().toISOString(),
+      })
+
+      // Reset form
+      setNewTask({
+        title: "",
+        description: "",
+        priority: "medium",
+        dueDate: new Date().toISOString().split("T")[0],
+        dueTime: "09:00",
+      })
+      setShowTaskForm(false)
+      setShowSuccess(true)
+
+      // Hide success message after 3 seconds
+      setTimeout(() => setShowSuccess(false), 3000)
+    } catch (error) {
+      console.error("Error adding task:", error)
+      alert("Failed to add task. Please try again.")
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const getEventsForDate = (date) => {
     return events.filter((event) => event.start.toDateString() === date.toDateString())
   }
@@ -115,6 +181,32 @@ const CalendarView = () => {
   const selectedDateEvents = getEventsForDate(selectedDate)
   const upcomingEvents = getUpcomingEvents()
   const todaysEvents = getTodaysEvents()
+
+  const getEventTypeColor = (type, priority) => {
+    if (type === "task") {
+      switch (priority) {
+        case "high":
+          return "bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200 border-red-300 dark:border-red-700"
+        case "medium":
+          return "bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-700"
+        case "low":
+          return "bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 border-green-300 dark:border-green-700"
+        default:
+          return "bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-700"
+      }
+    }
+
+    switch (type) {
+      case "meeting":
+        return "bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-700"
+      case "deadline":
+        return "bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200 border-red-300 dark:border-red-700"
+      case "call":
+        return "bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 border-green-300 dark:border-green-700"
+      default:
+        return "bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-700"
+    }
+  }
 
   const renderCalendar = () => {
     const firstDay = new Date(currentYear, currentMonth, 1)
@@ -140,7 +232,7 @@ const CalendarView = () => {
 
     // Empty cells for days before the first day of the month
     for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(<div key={`empty-${i}`} className="h-24 p-2"></div>)
+      days.push(<div key={`empty-${i}`} className="h-28 p-2 border border-gray-100 dark:border-gray-700"></div>)
     }
 
     // Days of the month
@@ -154,28 +246,30 @@ const CalendarView = () => {
         <div
           key={day}
           onClick={() => setSelectedDate(date)}
-          className={`h-24 p-2 border border-gray-200 dark:border-gray-600 cursor-pointer transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:scale-105 ${
-            isToday ? "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-400" : ""
-          } ${isSelected ? "bg-blue-100 dark:bg-blue-900/30 border-blue-500 shadow-md" : ""}`}
+          className={`h-28 p-2 border border-gray-100 dark:border-gray-700 cursor-pointer transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:scale-[1.02] ${
+            isToday ? "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-400 dark:border-yellow-600 shadow-md" : ""
+          } ${
+            isSelected
+              ? "bg-blue-100 dark:bg-blue-900/30 border-blue-500 dark:border-blue-400 shadow-lg ring-2 ring-blue-200 dark:ring-blue-800"
+              : ""
+          }`}
         >
-          <div className="font-medium text-gray-900 dark:text-white">{day}</div>
-          <div className="mt-1 space-y-1">
+          <div
+            className={`font-semibold text-sm mb-1 ${isToday ? "text-yellow-800 dark:text-yellow-200" : "text-gray-900 dark:text-white"}`}
+          >
+            {day}
+          </div>
+          <div className="space-y-1">
             {dayEvents.slice(0, 2).map((event) => (
               <div
                 key={event.id}
-                className={`text-xs p-1 rounded truncate transition-all hover:scale-105 ${
-                  event.type === "meeting"
-                    ? "bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
-                    : event.type === "deadline"
-                      ? "bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200"
-                      : "bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200"
-                }`}
+                className={`text-xs p-1 rounded border truncate transition-all hover:scale-105 ${getEventTypeColor(event.type, event.priority)}`}
               >
                 {event.title}
               </div>
             ))}
             {dayEvents.length > 2 && (
-              <div className="text-xs text-gray-500 dark:text-gray-400">+{dayEvents.length - 2} more</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">+{dayEvents.length - 2} more</div>
             )}
           </div>
         </div>,
@@ -184,21 +278,21 @@ const CalendarView = () => {
 
     return (
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-        <div className="bg-gray-50 dark:bg-gray-700 p-4 border-b border-gray-200 dark:border-gray-600">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-6 border-b border-gray-200 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigateMonth("prev")}
-                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors shadow-sm"
               >
                 <FaChevronLeft className="text-gray-600 dark:text-gray-300" />
               </button>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {monthNames[currentMonth]} {currentYear}
               </h3>
               <button
                 onClick={() => navigateMonth("next")}
-                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors shadow-sm"
               >
                 <FaChevronRight className="text-gray-600 dark:text-gray-300" />
               </button>
@@ -207,14 +301,14 @@ const CalendarView = () => {
               <button
                 onClick={connectGoogleCalendar}
                 disabled={loading}
-                className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-md"
               >
                 <FaGoogle size={16} />
                 <span>{loading ? "Connecting..." : "Connect Google Calendar"}</span>
               </button>
             )}
             {isGoogleConnected && (
-              <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
+              <div className="flex items-center space-x-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg">
                 <FaCheckCircle size={16} />
                 <span className="text-sm font-medium">Google Calendar Connected</span>
               </div>
@@ -226,7 +320,7 @@ const CalendarView = () => {
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div
               key={day}
-              className="bg-gray-100 dark:bg-gray-700 p-3 text-center font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600"
+              className="bg-gray-100 dark:bg-gray-700 p-4 text-center font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600"
             >
               {day}
             </div>
@@ -241,8 +335,26 @@ const CalendarView = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          {/* Success Message */}
+          <AnimatePresence>
+            {showSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2"
+              >
+                <FaCheckCircle />
+                <span>Task added successfully!</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-0">Calendar View</h1>
+            <div className="flex items-center space-x-3 mb-4 lg:mb-0">
+              <FaCalendarAlt className="h-8 w-8 text-blue-500" />
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Calendar View</h1>
+            </div>
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowTaskForm(!showTaskForm)}
@@ -260,6 +372,117 @@ const CalendarView = () => {
               </button>
             </div>
           </div>
+
+          {/* Add Task Form */}
+          <AnimatePresence>
+            {showTaskForm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-8"
+              >
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Add New Task</h2>
+                    <button
+                      onClick={() => setShowTaskForm(false)}
+                      className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                    >
+                      <FaTimes size={16} />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleAddTask} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Task Title *
+                        </label>
+                        <input
+                          type="text"
+                          value={newTask.title}
+                          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                          placeholder="Enter task title"
+                          className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Priority
+                        </label>
+                        <select
+                          value={newTask.priority}
+                          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all duration-200"
+                        >
+                          <option value="high">High Priority</option>
+                          <option value="medium">Medium Priority</option>
+                          <option value="low">Low Priority</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Description
+                      </label>
+                      <textarea
+                        value={newTask.description}
+                        onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                        placeholder="Enter task description"
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 min-h-[100px] resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Due Date
+                        </label>
+                        <input
+                          type="date"
+                          value={newTask.dueDate}
+                          onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all duration-200"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Due Time
+                        </label>
+                        <input
+                          type="time"
+                          value={newTask.dueTime}
+                          onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all duration-200"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end space-x-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={() => setShowTaskForm(false)}
+                        className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={saving}
+                        className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex items-center disabled:opacity-50"
+                      >
+                        <FaSave size={16} className="mr-2" />
+                        {saving ? "Adding..." : "Add Task"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
             {/* Calendar - Full Width */}
@@ -286,15 +509,15 @@ const CalendarView = () => {
                     {selectedDateEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="p-3 rounded-lg border transition-all hover:shadow-md bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
+                        className={`p-3 rounded-lg border transition-all hover:shadow-md ${getEventTypeColor(event.type, event.priority)}`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900 dark:text-white">{event.title}</span>
-                          <span className="text-xs text-blue-600 dark:text-blue-400">
+                          <span className="font-medium">{event.title}</span>
+                          <span className="text-xs">
                             {event.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{event.description}</p>
+                        <p className="text-sm opacity-75">{event.description}</p>
                       </div>
                     ))}
                   </div>
