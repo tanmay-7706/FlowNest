@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
@@ -25,16 +23,39 @@ function App() {
     habit: true,
   })
 
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
     const savedWidgets = localStorage.getItem("widgets")
     if (savedWidgets) {
       setWidgets(JSON.parse(savedWidgets))
     }
+
+    // Prevent flash of unstyled content
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+      document.body.classList.remove("preload")
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Add preload class to prevent transitions on initial load
+  useEffect(() => {
+    document.body.classList.add("preload")
   }, [])
 
   const updateWidgets = (newWidgets) => {
     setWidgets(newWidgets)
     localStorage.setItem("widgets", JSON.stringify(newWidgets))
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+      </div>
+    )
   }
 
   return (
