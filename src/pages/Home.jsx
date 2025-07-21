@@ -95,7 +95,7 @@ const Home = ({ widgets }) => {
               >
                 {/* Light mode image */}
                 <img
-                  src="/ProductivityDashboard_Light.png"
+                  src="/ProductivityDashboard_Light.png" 
                   alt="Productivity Dashboard Light"
                   className="block dark:hidden w-full h-auto rounded-xl"
                 />
