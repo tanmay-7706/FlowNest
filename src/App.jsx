@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
+import { ThemeProvider } from "./context/ThemeContext"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Home from "./pages/Home"
@@ -31,7 +32,7 @@ function App() {
       setWidgets(JSON.parse(savedWidgets))
     }
 
-    // Preventing flash of unstyled content -->
+    // Prevent flash of unstyled content
     const timer = setTimeout(() => {
       setIsLoading(false)
       document.body.classList.remove("preload")
@@ -40,7 +41,7 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Add preload class to prevent transitions on initial load -->
+  // Add preload class to prevent transitions on initial load
   useEffect(() => {
     document.body.classList.add("preload")
   }, [])
@@ -59,85 +60,87 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-          <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home widgets={widgets} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/about" element={<About />} />
-              <Route
-                path="/services"
-                element={
-                  <ProtectedRoute>
-                    <Services />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/blog"
-                element={
-                  <ProtectedRoute>
-                    <Blog />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/login" element={<Auth />} />
-              <Route path="/signup" element={<Auth isSignup={true} />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <Settings widgets={widgets} updateWidgets={updateWidgets} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <ProtectedRoute>
-                    <Analytics />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/calendar"
-                element={
-                  <ProtectedRoute>
-                    <CalendarView />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/tips"
-                element={
-                  <ProtectedRoute>
-                    <Tips />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </AnimatePresence>
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+            <Navbar />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <Home widgets={widgets} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/about" element={<About />} />
+                <Route
+                  path="/services"
+                  element={
+                    <ProtectedRoute>
+                      <Services />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/blog"
+                  element={
+                    <ProtectedRoute>
+                      <Blog />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<Auth />} />
+                <Route path="/signup" element={<Auth isSignup={true} />} />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings widgets={widgets} updateWidgets={updateWidgets} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <ProtectedRoute>
+                      <Analytics />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/calendar"
+                  element={
+                    <ProtectedRoute>
+                      <CalendarView />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tips"
+                  element={
+                    <ProtectedRoute>
+                      <Tips />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </AnimatePresence>
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 
