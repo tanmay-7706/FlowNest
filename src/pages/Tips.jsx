@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { FaLightbulb, FaSync, FaClock, FaBullseye, FaBrain, FaHeart, FaUsers, FaChartLine } from "react-icons/fa"
+import { FaLightbulb, FaSync, FaClock, FaBullseye, FaBrain, FaHeart, FaUsers, FaChartLine, FaBook } from "react-icons/fa"
 
 const Tips = () => {
   const [tips, setTips] = useState([])
@@ -148,6 +148,41 @@ const Tips = () => {
       icon: FaUsers,
       color: "indigo",
     },
+    {
+      id: 17,
+      title: "The Eisenhower Matrix",
+      description:
+        "Categorize tasks by urgency and importance. Focus on important but not urgent tasks to prevent crises.",
+      category: "productivity",
+      icon: FaBullseye,
+      color: "green",
+    },
+    {
+      id: 18,
+      title: "Continuous Learning",
+      description:
+        "Dedicate time each day to learning new skills or improving existing ones. Knowledge compounds over time.",
+      category: "learning",
+      icon: FaBook,
+      color: "orange",
+    },
+    {
+      id: 19,
+      title: "Environment Design",
+      description:
+        "Design your physical and digital environment to support your goals and minimize friction for good habits.",
+      category: "wellness",
+      icon: FaHeart,
+      color: "red",
+    },
+    {
+      id: 20,
+      title: "Progress Tracking",
+      description: "Regularly track your progress on goals and habits. What gets measured gets managed and improved.",
+      category: "productivity",
+      icon: FaChartLine,
+      color: "green",
+    },
   ]
 
   const categories = [
@@ -165,11 +200,12 @@ const Tips = () => {
     { id: "focus", name: "Focus", count: productivityTips.filter((tip) => tip.category === "focus").length },
     { id: "wellness", name: "Wellness", count: productivityTips.filter((tip) => tip.category === "wellness").length },
     { id: "teamwork", name: "Teamwork", count: productivityTips.filter((tip) => tip.category === "teamwork").length },
+    { id: "learning", name: "Learning", count: productivityTips.filter((tip) => tip.category === "learning").length },
   ]
 
   useEffect(() => {
     setLoading(true)
-    // Simulating API call -->
+    // Simulate API call
     setTimeout(() => {
       const filteredTips =
         selectedCategory === "all"
@@ -222,13 +258,19 @@ const Tips = () => {
         text: "text-indigo-600 dark:text-indigo-400",
         icon: "text-indigo-500",
       },
+      orange: {
+        bg: "bg-orange-50 dark:bg-orange-900/20",
+        border: "border-orange-200 dark:border-orange-800",
+        text: "text-orange-600 dark:text-orange-400",
+        icon: "text-orange-500",
+      },
     }
     return colorMap[color] || colorMap.blue
   }
 
   return (
-    <div className="page-container">
-      <div className="content-wrapper">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
             <div className="flex items-center mb-4 lg:mb-0">
@@ -242,7 +284,7 @@ const Tips = () => {
             </div>
             <button
               onClick={shuffleTips}
-              className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-200 dark:hover:bg-yellow-900/30 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-200 dark:hover:bg-yellow-900/30 transition-colors duration-300"
             >
               <FaSync size={16} />
               <span>Shuffle Tips</span>
@@ -256,7 +298,7 @@ const Tips = () => {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 ${
                     selectedCategory === category.id
                       ? "bg-blue-500 text-white"
                       : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -270,9 +312,9 @@ const Tips = () => {
 
           {/* Tips Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="card animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(9)].map((_, i) => (
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-3"></div>
                     <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
@@ -287,7 +329,7 @@ const Tips = () => {
             </div>
           ) : (
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
@@ -302,7 +344,7 @@ const Tips = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`card ${colorClasses.bg} ${colorClasses.border} border hover:shadow-lg transition-all duration-300`}
+                    className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-gray-100 dark:border-gray-700 ${colorClasses.bg} ${colorClasses.border} hover:shadow-lg`}
                   >
                     <div className="flex items-center mb-4">
                       <div className={`p-2 rounded-full bg-white dark:bg-gray-800 ${colorClasses.icon} mr-3`}>
