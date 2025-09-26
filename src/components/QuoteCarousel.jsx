@@ -6,6 +6,8 @@ const QuoteCarousel = () => {
   const [currentQuote, setCurrentQuote] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const quotes = [
     {
@@ -67,13 +69,22 @@ const QuoteCarousel = () => {
   ]
 
   useEffect(() => {
-    if (isAutoPlay) {
+    // Simulate loading
+    const loadTimer = setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(loadTimer)
+  }, [])
+
+  useEffect(() => {
+    if (isAutoPlay && !loading) {
       const interval = setInterval(() => {
         setCurrentQuote((prev) => (prev + 1) % quotes.length)
       }, 5000)
       return () => clearInterval(interval)
     }
-  }, [isAutoPlay, quotes.length])
+  }, [isAutoPlay, quotes.length, loading])
 
   const nextQuote = () => {
     setCurrentQuote((prev) => (prev + 1) % quotes.length)
@@ -89,11 +100,57 @@ const QuoteCarousel = () => {
 
   const refreshQuotes = () => {
     setIsRefreshing(true)
-    // Simulate API call -->
+    setError(null)
+    // Simulate API call
     setTimeout(() => {
       setCurrentQuote(Math.floor(Math.random() * quotes.length))
       setIsRefreshing(false)
     }, 1000)
+  }
+
+  const retryLoad = () => {
+    setError(null)
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+  }
+
+  if (loading) {
+    return (
+      <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/30 rounded-2xl border border-blue-200 dark:border-blue-800 relative">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-3 animate-pulse"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
+            </div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 mx-auto animate-pulse"></div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/30 rounded-2xl border border-blue-200 dark:border-blue-800 relative">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex flex-col items-center justify-center">
+            <p className="text-red-600 dark:text-red-400 mb-4">Failed to load quotes</p>
+            <button
+              onClick={retryLoad}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -137,7 +194,7 @@ const QuoteCarousel = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex flex-col justify-center"
                 >
                   <blockquote className="text-lg md:text-xl font-medium text-gray-800 dark:text-gray-200 leading-relaxed mb-4 text-center">
                     "{quotes[currentQuote].text}"
