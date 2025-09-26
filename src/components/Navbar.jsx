@@ -29,11 +29,16 @@ const Navbar = () => {
       return currentUser.displayName
     }
     if (currentUser?.email) {
-      // Extracting name from email or use a default -->
+      // Extract name from email or use a default
       const emailName = currentUser.email.split("@")[0]
       return emailName.charAt(0).toUpperCase() + emailName.slice(1)
     }
     return "User"
+  }
+
+  const getFirstName = () => {
+    const fullName = getUserDisplayName()
+    return fullName.split(" ")[0]
   }
 
   const navLinks = [
@@ -47,7 +52,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 transition-all duration-300 sticky top-0 z-50">
+    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 transition-colors duration-300 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -74,7 +79,7 @@ const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-300 ${
                   isActive(link.to)
                     ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                     : "text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -92,10 +97,12 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
-                  className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                  className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
                 >
                   <FaUser size={14} className="text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{getUserDisplayName()}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Welcome, {getFirstName()}
+                  </span>
                   <FaChevronDown size={12} className="text-gray-500 dark:text-gray-400" />
                 </button>
 
@@ -107,7 +114,7 @@ const Navbar = () => {
                   >
                     <Link
                       to="/profile"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
                       onClick={() => setShowUserDropdown(false)}
                     >
                       <FaUser size={14} />
@@ -115,7 +122,7 @@ const Navbar = () => {
                     </Link>
                     <Link
                       to="/settings"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
                       onClick={() => setShowUserDropdown(false)}
                     >
                       <FaCog size={14} />
@@ -124,7 +131,7 @@ const Navbar = () => {
                     <hr className="my-1 border-gray-200 dark:border-gray-700" />
                     <button
                       onClick={handleLogout}
-                      className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300 border border-transparent hover:border-red-200 dark:hover:border-red-800 rounded mx-2"
                     >
                       <FaSignOutAlt size={14} />
                       <span>Logout</span>
@@ -136,7 +143,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"
+                  className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-300 font-medium"
                 >
                   Login
                 </Link>
@@ -154,7 +161,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-3 lg:hidden">
             <DarkModeToggle />
             <button
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none p-2"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none p-2 transition-colors duration-300"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <FaTimes className="h-5 w-5" /> : <FaBars className="h-5 w-5" />}
@@ -175,7 +182,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`block px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-300 ${
                     isActive(link.to)
                       ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                       : "text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -193,12 +200,12 @@ const Navbar = () => {
                   <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <FaUser size={14} className="text-gray-500 dark:text-gray-400" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Welcome, {getUserDisplayName()}
+                      Welcome, {getFirstName()}
                     </span>
                   </div>
                   <Link
                     to="/profile"
-                    className="flex items-center space-x-2 w-full px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-all duration-200 text-sm font-medium border border-blue-200 dark:border-blue-800"
+                    className="flex items-center space-x-2 w-full px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-300 text-sm font-medium border border-blue-200 dark:border-blue-800"
                     onClick={() => setIsOpen(false)}
                   >
                     <FaUser size={14} />
@@ -206,7 +213,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/settings"
-                    className="flex items-center space-x-2 w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 text-sm font-medium border border-gray-200 dark:border-gray-700"
+                    className="flex items-center space-x-2 w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-300 text-sm font-medium border border-gray-200 dark:border-gray-700"
                     onClick={() => setIsOpen(false)}
                   >
                     <FaCog size={14} />
@@ -217,7 +224,7 @@ const Navbar = () => {
                       handleLogout()
                       setIsOpen(false)
                     }}
-                    className="flex items-center space-x-2 w-full px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all duration-200 text-sm font-medium border border-red-200 dark:border-red-800"
+                    className="flex items-center space-x-2 w-full px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors duration-300 text-sm font-medium border border-red-200 dark:border-red-800"
                   >
                     <FaSignOutAlt size={14} />
                     <span>Logout</span>
@@ -227,7 +234,7 @@ const Navbar = () => {
                 <div className="space-y-2">
                   <Link
                     to="/login"
-                    className="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors text-sm font-medium"
+                    className="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors duration-300 text-sm font-medium"
                     onClick={() => setIsOpen(false)}
                   >
                     Login
