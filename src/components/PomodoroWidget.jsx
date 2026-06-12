@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { FaPlay, FaPause, FaRedo } from "react-icons/fa"
+import { motion } from "framer-motion"
 
 const PomodoroWidget = () => {
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes in seconds
@@ -11,33 +11,7 @@ const PomodoroWidget = () => {
   const [volume, setVolume] = useState(0.5)
   const audioRef = useRef(null)
 
-  useEffect(() => {
-    if (isActive) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(intervalRef.current)
-            setIsActive(false)
-            handleTimerCompletion()
-            return 0
-          }
-          return prevTime - 1
-        })
-      }, 1000)
-    } else {
-      clearInterval(intervalRef.current)
-    }
-
-    return () => clearInterval(intervalRef.current)
-  }, [isActive])
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume
-    }
-  }, [volume])
-
-  const handleTimerCompletion = () => {
+  const handleTimerCompletion = useCallback(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
       if (Notification.permission === "granted") {
         new Notification("Pomodoro Timer", {
@@ -58,7 +32,33 @@ const PomodoroWidget = () => {
     if (selectedSound !== "none" && audioRef.current) {
       audioRef.current.play()
     }
-  }
+  }, [selectedSound])
+
+  useEffect(() => {
+    if (isActive) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(intervalRef.current)
+            setIsActive(false)
+            handleTimerCompletion()
+            return 0
+          }
+          return prevTime - 1
+        })
+      }, 1000)
+    } else {
+      clearInterval(intervalRef.current)
+    }
+
+    return () => clearInterval(intervalRef.current)
+  }, [isActive, handleTimerCompletion])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume
+    }
+  }, [volume])
 
   const toggleTimer = () => {
     setIsActive(!isActive)

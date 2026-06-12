@@ -1,87 +1,108 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaQuoteLeft, FaChevronLeft, FaChevronRight, FaSync } from "react-icons/fa"
+import { FaQuoteLeft, FaChevronLeft, FaChevronRight, FaSync, FaMagic, FaRobot } from "react-icons/fa"
+import OpenRouterService from "../services/OpenRouterService"
+import { LoadingSpinner } from "./Loading"
+import { useAuth } from "../context/AuthContext"
 
 const QuoteCarousel = () => {
+  const { currentUser } = useAuth()
   const [currentQuote, setCurrentQuote] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  const quotes = [
-    {
-      text: "The way to get started is to quit talking and begin doing.",
-      author: "Walt Disney",
-    },
-    {
-      text: "Don't let yesterday take up too much of today.",
-      author: "Will Rogers",
-    },
-    {
-      text: "You learn more from failure than from success.",
-      author: "Unknown",
-    },
-    {
-      text: "It's not whether you get knocked down, it's whether you get up.",
-      author: "Vince Lombardi",
-    },
-    {
-      text: "If you are working on something that you really care about, you don't have to be pushed.",
-      author: "Steve Jobs",
-    },
-    {
-      text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-      author: "Winston Churchill",
-    },
-    {
-      text: "The future belongs to those who believe in the beauty of their dreams.",
-      author: "Eleanor Roosevelt",
-    },
-    {
-      text: "It is during our darkest moments that we must focus to see the light.",
-      author: "Aristotle",
-    },
-    {
-      text: "The only impossible journey is the one you never begin.",
-      author: "Tony Robbins",
-    },
-    {
-      text: "In the middle of difficulty lies opportunity.",
-      author: "Albert Einstein",
-    },
-    {
-      text: "Believe you can and you're halfway there.",
-      author: "Theodore Roosevelt",
-    },
-    {
-      text: "The only way to do great work is to love what you do.",
-      author: "Steve Jobs",
-    },
-    {
-      text: "Life is what happens to you while you're busy making other plans.",
-      author: "John Lennon",
-    },
-    {
-      text: "The future depends on what you do today.",
-      author: "Mahatma Gandhi",
-    },
-  ]
+  const [quotes, setQuotes] = useState([])
+  const [isAIEnabled, setIsAIEnabled] = useState(false)
 
   useEffect(() => {
-    // Simulate loading
-    const loadTimer = setTimeout(() => {
-      setLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(loadTimer)
+    loadInitialQuotes()
   }, [])
 
+  const loadInitialQuotes = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      // Check if OpenRouter is available
+      const openRouterAvailable = import.meta.env.VITE_OPENROUTER_API_KEY && 
+                                  import.meta.env.VITE_OPENROUTER_API_KEY !== 'your_openrouter_api_key_here'
+      
+      setIsAIEnabled(openRouterAvailable)
+      
+      if (openRouterAvailable) {
+        // Generate AI-powered personalized quote
+        const userContext = {
+          mood: 'motivated',
+          goals: 'productivity and growth',
+          recentActivity: 'working on personal development'
+        }
+        
+        const aiQuote = await OpenRouterService.generateMotivationalQuote(userContext)
+        
+        // Fallback quotes
+        const fallbackQuotes = [
+          {
+            text: "The future depends on what you do today.",
+            author: "Mahatma Gandhi",
+          },
+          {
+            text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            author: "Winston Churchill",
+          },
+          {
+            text: "The only way to do great work is to love what you do.",
+            author: "Steve Jobs",
+          }
+        ]
+        
+        setQuotes([aiQuote, ...fallbackQuotes])
+      } else {
+        // Use fallback quotes only
+        const fallbackQuotes = [
+          {
+            text: "The way to get started is to quit talking and begin doing.",
+            author: "Walt Disney",
+          },
+          {
+            text: "Don't let yesterday take up too much of today.",
+            author: "Will Rogers",
+          },
+          {
+            text: "You learn more from failure than from success.",
+            author: "Unknown",
+          },
+          {
+            text: "The future depends on what you do today.",
+            author: "Mahatma Gandhi",
+          }
+        ]
+        setQuotes(fallbackQuotes)
+      }
+    } catch (err) {
+      setError(err.message)
+      // Load fallback quotes on error
+      const fallbackQuotes = [
+        {
+          text: "Every moment is a fresh beginning.",
+          author: "T.S. Eliot",
+        },
+        {
+          text: "The only impossible journey is the one you never begin.",
+          author: "Tony Robbins",
+        }
+      ]
+      setQuotes(fallbackQuotes)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    if (isAutoPlay && !loading) {
+    if (isAutoPlay && !loading && quotes.length > 0) {
       const interval = setInterval(() => {
         setCurrentQuote((prev) => (prev + 1) % quotes.length)
-      }, 5000)
+      }, 6000) // Slower for AI quotes
       return () => clearInterval(interval)
     }
   }, [isAutoPlay, quotes.length, loading])
@@ -98,22 +119,41 @@ const QuoteCarousel = () => {
     setCurrentQuote(index)
   }
 
-  const refreshQuotes = () => {
-    setIsRefreshing(true)
-    setError(null)
-    // Simulate API call
-    setTimeout(() => {
-      setCurrentQuote(Math.floor(Math.random() * quotes.length))
+  const refreshQuotes = async () => {
+    if (isRefreshing) return
+    
+    try {
+      setIsRefreshing(true)
+      setError(null)
+      
+      if (isAIEnabled) {
+        // Generate new AI quotes with different contexts
+        const contexts = [
+          { mood: 'focused', goals: 'achieving excellence', recentActivity: 'deep work' },
+          { mood: 'energetic', goals: 'personal growth', recentActivity: 'learning new skills' },
+          { mood: 'determined', goals: 'overcoming challenges', recentActivity: 'problem solving' }
+        ]
+        
+        const newQuotes = await Promise.all(
+          contexts.map(context => OpenRouterService.generateMotivationalQuote(context))
+        )
+        
+        setQuotes(prev => [...newQuotes, ...prev.slice(3)])
+      } else {
+        // Just shuffle existing quotes
+        setQuotes(prev => [...prev].sort(() => Math.random() - 0.5))
+      }
+      
+      setCurrentQuote(0)
+    } catch (err) {
+      setError(err.message)
+    } finally {
       setIsRefreshing(false)
-    }, 1000)
+    }
   }
 
   const retryLoad = () => {
-    setError(null)
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-    }, 1000)
+    loadInitialQuotes()
   }
 
   if (loading) {
@@ -122,13 +162,13 @@ const QuoteCarousel = () => {
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-3 animate-pulse"></div>
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
+              <FaQuoteLeft className="text-blue-500 text-2xl mr-3" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI-Powered Inspiration</h2>
             </div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 mx-auto animate-pulse"></div>
+            <p className="text-gray-600 dark:text-gray-300">Generating personalized motivation...</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <LoadingSpinner size="lg" />
           </div>
         </div>
       </section>
@@ -159,9 +199,14 @@ const QuoteCarousel = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <FaQuoteLeft className="text-blue-500 text-2xl mr-3" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Daily Inspiration</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI-Powered Inspiration</h2>
+            {isAIEnabled && (
+              <FaRobot className="text-purple-500 text-lg ml-2" title="Powered by GPT-3.5 Turbo" />
+            )}
           </div>
-          <p className="text-gray-600 dark:text-gray-300">Fuel your productivity with wisdom from great minds</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            {isAIEnabled ? 'Personalized motivation powered by advanced AI' : 'Curated wisdom to fuel your productivity'}
+          </p>
         </div>
 
         {/* Refresh Button */}
@@ -169,8 +214,15 @@ const QuoteCarousel = () => {
           onClick={refreshQuotes}
           disabled={isRefreshing}
           className="absolute top-4 right-4 p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-50"
+          title={isAIEnabled ? 'Generate new AI quotes' : 'Refresh quotes'}
         >
-          <FaSync className={`${isRefreshing ? "animate-spin" : ""}`} size={16} />
+          {isRefreshing ? (
+            <LoadingSpinner size="sm" />
+          ) : isAIEnabled ? (
+            <FaRobot size={16} />
+          ) : (
+            <FaSync size={16} />
+          )}
         </button>
 
         <div className="relative">
@@ -194,14 +246,19 @@ const QuoteCarousel = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex flex-col justify-center"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 min-h-[200px] flex flex-col justify-center relative"
                 >
+                  {quotes[currentQuote]?.author === 'AI Coach' && (
+                    <div className="absolute top-3 right-3">
+                      <FaRobot className="text-purple-500 text-sm" title="AI Generated" />
+                    </div>
+                  )}
                   <blockquote className="text-lg md:text-xl font-medium text-gray-800 dark:text-gray-200 leading-relaxed mb-4 text-center">
-                    "{quotes[currentQuote].text}"
+                    "{quotes[currentQuote]?.text}"
                   </blockquote>
                   <div className="text-center">
                     <cite className="text-base font-semibold text-blue-600 dark:text-blue-400">
-                      — {quotes[currentQuote].author}
+                      — {quotes[currentQuote]?.author}
                     </cite>
                   </div>
                 </motion.div>

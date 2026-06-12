@@ -145,7 +145,7 @@ const Auth = ({ isSignup = false }) => {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20 transition-colors flex">
+    <div className="min-h-screen transition-colors flex">
       {/* Left Panel - Brand Introduction */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-blue-600 to-purple-700"></div>
@@ -249,7 +249,7 @@ const Auth = ({ isSignup = false }) => {
             <p className="text-gray-600 dark:text-gray-400">Your Personal Productivity Ecosystem</p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8">
+          <div className="glass-panel p-8">
             {/* Form Header */}
             <div className="text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-3">
@@ -297,27 +297,6 @@ const Auth = ({ isSignup = false }) => {
                 <FaGoogle className="h-5 w-5 text-red-500 mr-3" />
                 Continue with Google
               </button>
-
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={handleGithubAuth}
-                  disabled={loading}
-                  className="flex items-center justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 font-medium"
-                >
-                  <FaGithub className="h-5 w-5 mr-2" />
-                  GitHub
-                </button>
-                <button
-                  type="button"
-                  onClick={handleAppleAuth}
-                  disabled={loading}
-                  className="flex items-center justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 font-medium"
-                >
-                  <FaApple className="h-5 w-5 mr-2" />
-                  Apple
-                </button>
-              </div>
             </div>
 
             {/* Divider */}

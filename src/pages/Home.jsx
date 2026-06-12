@@ -12,6 +12,10 @@ import RecentActivityWidget from "../components/RecentActivityWidget"
 import TimeBlockingWidget from "../components/TimeBlockingWidget"
 import FocusScoreWidget from "../components/FocusScoreWidget"
 import WeeklyDataSyncWidget from "../components/WeeklyDataSyncWidget"
+import AITaskAssistant from "../components/AITaskAssistant"
+import AIGoalBreakdown from "../components/AIGoalBreakdown"
+import AIMeetingAnalyzer from "../components/AIMeetingAnalyzer"
+import AIHabitRecommendations from "../components/AIHabitRecommendations"
 import {
   FaSearch,
   FaArrowRight,
@@ -22,9 +26,10 @@ import {
   FaCalendarCheck,
   FaStickyNote,
   FaBullseye,
+  FaRobot,
 } from "react-icons/fa"
-import LightImg from "../assets/ProductivityDashboard_Light.png";
-import DarkImg from "../assets/ProductivityDashboard_Dark.png";
+import LightImg from "../assets/ProductivityDashboard_Light.webp";
+import DarkImg from "../assets/ProductivityDashboard_Dark.webp";
 
 const Home = ({ widgets }) => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -42,7 +47,7 @@ const Home = ({ widgets }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           {/* Hero Section */}
@@ -128,6 +133,47 @@ const Home = ({ widgets }) => {
             </div>
           </div>
 
+          {/* AI-Powered Features Section */}
+          <section className="mb-16">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center">
+                <FaRobot className="mr-3 text-purple-500" />
+                AI-Powered Productivity
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Experience the future of productivity with our advanced AI assistants
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+              {/* AI Task Assistant - Purple Theme */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <div className="bento-card h-full">
+                  <AITaskAssistant />
+                </div>
+              </motion.div>
+
+              {/* AI Goal Breakdown - Teal Theme */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <div className="bento-card h-full">
+                  <AIGoalBreakdown />
+                </div>
+              </motion.div>
+
+              {/* AI Meeting Analyzer - Indigo Theme */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <div className="bento-card h-full">
+                  <AIMeetingAnalyzer />
+                </div>
+              </motion.div>
+
+              {/* AI Habit Recommendations - Green Theme */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                <div className="bento-card h-full">
+                  <AIHabitRecommendations />
+                </div>
+              </motion.div>
+            </div>
+          </section>
           {/* Productivity Tools Section - 3x4 Grid with Consistent Styling */}
           <section id="productivity-tools" className="mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
@@ -137,14 +183,14 @@ const Home = ({ widgets }) => {
               {/* Row 1 */}
               {/* Goal Tracker - Teal Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-teal-200 dark:border-teal-800 h-full">
+                <div className="bento-card h-full">
                   <GoalTracker />
                 </div>
               </motion.div>
 
               {/* Pomodoro Timer - Red Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-red-200 dark:border-red-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaClock className="h-5 w-5 text-red-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Pomodoro Timer</h3>
@@ -155,7 +201,7 @@ const Home = ({ widgets }) => {
 
               {/* Weekly Data Sync - Emerald Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-emerald-200 dark:border-emerald-800 h-full">
+                <div className="bento-card h-full">
                   <WeeklyDataSyncWidget />
                 </div>
               </motion.div>
@@ -163,7 +209,7 @@ const Home = ({ widgets }) => {
               {/* Row 2 */}
               {/* To-Do List - Green Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                <div className="bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/20 dark:to-lime-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-green-200 dark:border-green-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaCheckSquare className="h-5 w-5 text-green-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">To-Do List</h3>
@@ -174,7 +220,7 @@ const Home = ({ widgets }) => {
 
               {/* Daily Reflection - Purple Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-                <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-purple-200 dark:border-purple-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaLightbulb className="h-5 w-5 text-purple-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Daily Reflection</h3>
@@ -185,7 +231,7 @@ const Home = ({ widgets }) => {
 
               {/* Habit Tracker - Blue Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-blue-200 dark:border-blue-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaCalendarCheck className="h-5 w-5 text-blue-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Habit Tracker</h3>
@@ -207,7 +253,7 @@ const Home = ({ widgets }) => {
 
               {/* Recent Activity - Amber Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
-                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-amber-200 dark:border-amber-800 h-full">
+                <div className="bento-card h-full">
                   <RecentActivityWidget />
                 </div>
               </motion.div>
@@ -215,14 +261,14 @@ const Home = ({ widgets }) => {
               {/* Row 4 */}
               {/* Focus Score - Indigo Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 }}>
-                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-indigo-200 dark:border-indigo-800 h-full">
+                <div className="bento-card h-full">
                   <FocusScoreWidget />
                 </div>
               </motion.div>
 
               {/* Quick Notes - Rose Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}>
-                <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-rose-200 dark:border-rose-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaStickyNote className="h-5 w-5 text-rose-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Notes</h3>
@@ -236,7 +282,7 @@ const Home = ({ widgets }) => {
 
               {/* Today's Focus - Orange Theme */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }}>
-                <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl shadow-sm hover:shadow-md p-6 transition-all duration-300 border border-orange-200 dark:border-orange-800 h-full">
+                <div className="bento-card h-full">
                   <div className="flex items-center mb-4">
                     <FaBullseye className="h-5 w-5 text-orange-500 mr-2" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Today's Focus</h3>

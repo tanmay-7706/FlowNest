@@ -142,7 +142,6 @@ const Profile = () => {
       window.location.reload()
 
       setIsEditing(false)
-      console.log("Profile saved:", profileData)
     } catch (error) {
       console.error("Error updating profile:", error)
       alert("Failed to update profile. Please try again.")
