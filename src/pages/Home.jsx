@@ -31,7 +31,7 @@ import {
 import LightImg from "../assets/ProductivityDashboard_Light.webp";
 import DarkImg from "../assets/ProductivityDashboard_Dark.webp";
 
-const Home = ({ widgets }) => {
+const Home = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const navigate = useNavigate()
 

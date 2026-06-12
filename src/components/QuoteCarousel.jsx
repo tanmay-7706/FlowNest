@@ -6,8 +6,7 @@ import { LoadingSpinner } from "./Loading"
 import { useAuth } from "../context/AuthContext"
 
 const QuoteCarousel = () => {
-  const { currentUser } = useAuth()
-  const [currentQuote, setCurrentQuote] = useState(0)
+    const [currentQuote, setCurrentQuote] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)

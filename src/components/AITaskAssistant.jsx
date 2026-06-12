@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaRobot, FaMagic, FaLightbulb, FaTasks, FaSpinner, FaChevronDown, FaChevronUp } from 'react-icons/fa'
 import OpenRouterService from '../services/OpenRouterService'

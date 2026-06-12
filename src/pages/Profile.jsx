@@ -89,7 +89,7 @@ const Profile = () => {
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe())
     }
-  }, [currentUser])
+  }, [currentUser, getUserDisplayName])
 
   const getUserDisplayName = () => {
     if (currentUser?.displayName) {

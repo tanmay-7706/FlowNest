@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { GoogleAuthProvider, signInWithPopup, GithubAuthProvider } from "firebase/auth"
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { auth } from "../utils/firebase"
 
 const Auth = ({ isSignup = false }) => {
@@ -82,24 +82,7 @@ const Auth = ({ isSignup = false }) => {
     setLoading(false)
   }
 
-  const handleGithubAuth = async () => {
-    setError("")
-    setLoading(true)
 
-    try {
-      const provider = new GithubAuthProvider()
-      await signInWithPopup(auth, provider)
-      navigate("/")
-    } catch (e) {
-      setError(e.message)
-    }
-
-    setLoading(false)
-  }
-
-  const handleAppleAuth = () => {
-    setError("Apple Sign-In coming soon!")
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target

@@ -26,7 +26,6 @@ const CalendarView = () => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
   const [events, setEvents] = useState([])
   const [isGoogleConnected, setIsGoogleConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [showTaskForm, setShowTaskForm] = useState(false)
   const [saving, setSaving] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -96,16 +95,8 @@ const CalendarView = () => {
     })
 
     return () => unsubscribe()
-  }, [currentUser, currentMonth, currentYear])
+  }, [currentUser, currentMonth, currentYear, mockEvents])
 
-  const connectGoogleCalendar = async () => {
-    setLoading(true)
-    // Simulating Google OAuth flow -->
-    setTimeout(() => {
-      setIsGoogleConnected(true)
-      setLoading(false)
-    }, 2000)
-  }
 
   const navigateMonth = (direction) => {
     if (direction === "prev") {
