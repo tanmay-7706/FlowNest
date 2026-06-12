@@ -1,17 +1,22 @@
 import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore"
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCtOWhu1o-TjFj9DiGMWxR4ZuAwzLvTptg",
-  authDomain: "flownest-476.firebaseapp.com",
-  projectId: "flownest-476",
-  storageBucket: "flownest-476.firebasestorage.app",
-  messagingSenderId: "227680483834",
-  appId: "1:227680483834:web:9bce42ed5a0df7b08a4c43",
-  measurementId: "G-2GF1P0Z52K"
-};
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+}
+
+// Validate required environment variables
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error('Missing required Firebase configuration. Please check your environment variables.')
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
@@ -19,7 +24,10 @@ const app = initializeApp(firebaseConfig)
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app)
 
-// Initialize Cloud Firestore and get a reference to the service
-export const db = getFirestore(app)
+// Initialize Cloud Firestore with the modern caching API
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+})
 
 export default app
+
