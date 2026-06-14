@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { FaPlay, FaPause, FaRedo } from "react-icons/fa"
-import { motion } from "framer-motion"
+
 
 const PomodoroWidget = () => {
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes in seconds

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FaRobot, FaMagic, FaLightbulb, FaTasks, FaSpinner, FaChevronDown, FaChevronUp } from 'react-icons/fa'
 import OpenRouterService from '../services/OpenRouterService'
 import { useTodos } from '../hooks/useFirestore'
@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext'
 
 const AITaskAssistant = () => {
   const { currentUser } = useAuth()
-  const { todos, addTodo, updateTodo } = useTodos()
+  const { todos, updateTodo } = useTodos()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [suggestions, setSuggestions] = useState([])

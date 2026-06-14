@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+
 import { FaHeart, FaSync } from "react-icons/fa"
 
 const DailyMotivationWidget = () => {

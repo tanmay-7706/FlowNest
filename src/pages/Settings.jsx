@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { motion } from "framer-motion"
+
 import { FaSave, FaSync, FaCog, FaPalette, FaBell, FaUser, FaShieldAlt } from "react-icons/fa"
 import DarkModeToggle from "../components/DarkModeToggle"
 import DataExport from "../components/DataExport"

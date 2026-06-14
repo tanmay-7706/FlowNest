@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FaBullseye, FaRobot, FaPlus, FaCheck, FaClock, FaSpinner } from 'react-icons/fa'
 import OpenRouterService from '../services/OpenRouterService'
 import { useAuth } from '../context/AuthContext'

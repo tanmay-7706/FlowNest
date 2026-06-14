@@ -63,7 +63,7 @@ describe('useFirestore hooks', () => {
 
       // Re-import to pick up new mock — but since we already imported,
       // we test the existing hook's behavior with the original mock
-      const { result } = renderHook(() => useTodos())
+      const { _result } = renderHook(() => useTodos())
       // The hook already has a currentUser, so this specific branch
       // is tested by the guard in the function
     })

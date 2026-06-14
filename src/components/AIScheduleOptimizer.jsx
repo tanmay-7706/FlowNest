@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FaClock, FaRobot, FaCalendarAlt, FaSpinner, FaDownload } from 'react-icons/fa'
 import { GrOptimize } from "react-icons/gr";
 import OpenRouterService from '../services/OpenRouterService'

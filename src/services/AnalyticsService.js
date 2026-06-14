@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, addDoc, orderBy, limit } from 'firebase/firestore'
+import { collection, query, where, getDocs, addDoc, orderBy } from 'firebase/firestore'
 import { db } from '../utils/firebase'
 
 class AnalyticsService {

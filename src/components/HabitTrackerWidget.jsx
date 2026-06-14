@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+
 import { FaPlus, FaTrash } from "react-icons/fa"
 import { useAuth } from "../context/AuthContext"
 import { db } from "../utils/firebase"

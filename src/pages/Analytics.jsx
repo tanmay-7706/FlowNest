@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { motion } from "framer-motion"
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts"
 import { useAuth } from "../context/AuthContext"
 import AnalyticsService from "../services/AnalyticsService"

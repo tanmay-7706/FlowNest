@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
+
 import { FaRobot, FaBrain, FaChartLine, FaLightbulb, FaClock, FaSync } from 'react-icons/fa'
 import { LuTarget } from "react-icons/lu";
 import OpenRouterService from '../services/OpenRouterService'

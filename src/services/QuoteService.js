@@ -64,7 +64,7 @@ class QuoteService {
         if (quote.text && quote.author) {
           return quote
         }
-      } catch (err) {
+      } catch (_err) {
         // If JSON parsing fails, try to extract quote manually
         const lines = text.split('\n').filter(line => line.trim())
         if (lines.length >= 2) {

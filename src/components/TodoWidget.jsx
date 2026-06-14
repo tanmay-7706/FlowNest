@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import { FaPlus, FaTrash, FaExclamationCircle } from "react-icons/fa"
 import { useTodos } from "../hooks/useFirestore"
 import { LoadingSpinner } from "./Loading"

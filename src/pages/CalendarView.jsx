@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import { useAuth } from "../context/AuthContext"
 import { collection, addDoc, onSnapshot, query, where, orderBy } from "firebase/firestore"
 import { db } from "../utils/firebase"
@@ -25,7 +25,7 @@ const CalendarView = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
   const [events, setEvents] = useState([])
-  const [isGoogleConnected, setIsGoogleConnected] = useState(false)
+  const [isGoogleConnected, _setIsGoogleConnected] = useState(false)
   const [showTaskForm, setShowTaskForm] = useState(false)
   const [saving, setSaving] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)

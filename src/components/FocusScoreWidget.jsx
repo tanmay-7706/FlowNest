@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+
 import { FaBrain, FaFire } from "react-icons/fa"
 import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { db } from "../utils/firebase"
@@ -79,7 +79,7 @@ const FocusScoreWidget = () => {
       }
     }
 
-    setFocusScore((prev) => Math.min(Math.max(score, 0), 100))
+    setFocusScore((_prev) => Math.min(Math.max(score, 0), 100))
     setStreak(currentStreak)
   }
 

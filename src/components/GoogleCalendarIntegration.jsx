@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FaCalendarAlt, FaPlus, FaSync, FaSignOutAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
 import GoogleCalendarService from '../services/GoogleCalendarService'
@@ -32,7 +32,7 @@ const GoogleCalendarIntegration = () => {
       if (GoogleCalendarService.isAuthenticated()) {
         await loadEvents()
       }
-    } catch (err) {
+    } catch (_err) {
       console.error('Failed to initialize Google Calendar:', error)
       setError('Failed to initialize Google Calendar')
     }
@@ -46,7 +46,7 @@ const GoogleCalendarIntegration = () => {
       await GoogleCalendarService.signIn()
       setIsConnected(true)
       await loadEvents()
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to connect to Google Calendar')
     } finally {
       setLoading(false)
@@ -58,7 +58,7 @@ const GoogleCalendarIntegration = () => {
       await GoogleCalendarService.signOut()
       setIsConnected(false)
       setEvents([])
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to disconnect from Google Calendar')
     }
   }
@@ -68,7 +68,7 @@ const GoogleCalendarIntegration = () => {
     try {
       const calendarEvents = await GoogleCalendarService.getEvents()
       setEvents(calendarEvents.slice(0, 10)) // Show next 10 events
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load calendar events')
     } finally {
       setSyncing(false)
@@ -91,7 +91,7 @@ const GoogleCalendarIntegration = () => {
       setNewEvent({ title: '', description: '', start: '', end: '', location: '' })
       setShowCreateEvent(false)
       await loadEvents()
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to create event')
     } finally {
       setLoading(false)

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import { FaQuoteLeft, FaChevronLeft, FaChevronRight, FaSync, FaMagic, FaRobot } from "react-icons/fa"
 import OpenRouterService from "../services/OpenRouterService"
 import { LoadingSpinner } from "./Loading"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+
 import { FaSync, FaDownload, FaCheckCircle, FaClock } from "react-icons/fa"
 import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { db } from "../utils/firebase"

@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { motion } from "framer-motion"
+
 import { FaTwitter, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCog, FaChevronDown } from "react-icons/fa"
+import { motion } from "framer-motion"
 import { useAuth } from "../context/AuthContext"
 import DarkModeToggle from "./DarkModeToggle"
 
@@ -45,6 +46,7 @@ const Navbar = () => {
     { to: "/", label: "Home" },
     { to: "/analytics", label: "Analytics" },
     { to: "/calendar", label: "Calendar" },
+    { to: "/focus", label: "Zen Mode" },
   ]
 
   return (

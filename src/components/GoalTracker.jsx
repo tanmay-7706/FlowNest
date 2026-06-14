@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+
 import { FaPlus, FaTrash, FaEdit, FaSave, FaBullseye } from "react-icons/fa"
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore"
 import { db } from "../utils/firebase"
@@ -16,7 +16,7 @@ const GoalTracker = () => {
     type: "weekly",
     category: "personal",
   })
-  const [editingGoal, setEditingGoal] = useState(null)
+  const [_editingGoal, setEditingGoal] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
