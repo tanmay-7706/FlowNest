@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect, useMemo } from "react"
 import { AnimatePresence } from "framer-motion"
 import { useAuth } from "../context/AuthContext"

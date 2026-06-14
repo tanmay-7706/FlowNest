@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect } from "react"
 
 import { FaHeart, FaSync } from "react-icons/fa"

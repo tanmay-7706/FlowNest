@@ -22,6 +22,7 @@ const CalendarView = lazy(() => import("./pages/CalendarView"))
 // Lazy-loaded heavy component
 const AIChatAssistant = lazy(() => import("./components/AIChatAssistant"))
 const ZenFocusRoom = lazy(() => import("./pages/ZenFocusRoom"))
+const KanbanBoard = lazy(() => import("./pages/KanbanBoard"))
 
 function App() {
   const [widgets, setWidgets] = useState({
@@ -134,6 +135,14 @@ function App() {
                         element={
                           <ProtectedRoute>
                             <ZenFocusRoom />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/tasks"
+                        element={
+                          <ProtectedRoute>
+                            <KanbanBoard />
                           </ProtectedRoute>
                         }
                       />

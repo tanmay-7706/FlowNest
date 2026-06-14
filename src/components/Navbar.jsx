@@ -44,6 +44,7 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/tasks", label: "Tasks" },
     { to: "/analytics", label: "Analytics" },
     { to: "/calendar", label: "Calendar" },
     { to: "/focus", label: "Zen Mode" },

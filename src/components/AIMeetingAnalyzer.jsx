@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { FaUsers, FaRobot, FaClipboardList, FaSpinner, FaDownload, FaCopy } from 'react-icons/fa'

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect } from "react"
 
 import { FaSync, FaDownload, FaCheckCircle, FaClock } from "react-icons/fa"

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react'
 
 import { FaRobot, FaBrain, FaChartLine, FaLightbulb, FaClock, FaSync } from 'react-icons/fa'

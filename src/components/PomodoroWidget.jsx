@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback } from "react"
 import { FaPlay, FaPause, FaRedo } from "react-icons/fa"
 

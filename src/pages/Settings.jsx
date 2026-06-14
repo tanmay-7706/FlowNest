@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from "react"
 
 import { FaSave, FaSync, FaCog, FaPalette, FaBell, FaUser, FaShieldAlt } from "react-icons/fa"
