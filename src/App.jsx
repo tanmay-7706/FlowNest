@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import ProtectedRoute from "./components/ProtectedRoute"
 import { OfflineIndicator } from "./components/OfflineIndicator"
+import ReloadPrompt from "./components/ReloadPrompt"
 
 // Lazy-loaded page components for code splitting
 const Home = lazy(() => import("./pages/Home"))
@@ -70,6 +71,7 @@ function App() {
             <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 transition-colors duration-300">
               <Navbar />
               <OfflineIndicator />
+              <ReloadPrompt />
               <main className="flex-1">
                 <Suspense
                   fallback={
